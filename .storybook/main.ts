@@ -3,7 +3,6 @@ import path from 'path'
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(tsx)', '../docs/*.mdx'],
-
   addons: [
     'storybook-addon-mock',
     {
@@ -35,5 +34,15 @@ const config: StorybookConfig = {
       to: 'node_modules/emoji-picker-element-data',
     },
   ],
+
+  webpackFinal: async (config) => {
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+      syncWebAssembly: false,
+    }
+
+    return config
+  },
 }
 export default config

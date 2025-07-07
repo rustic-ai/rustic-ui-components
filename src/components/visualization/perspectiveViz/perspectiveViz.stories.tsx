@@ -2,7 +2,10 @@
 import type { Meta, StoryFn } from '@storybook/react-webpack5'
 import React from 'react'
 
+import { initPerspective } from './perspectiveInit'
 import PerspectiveViz from './perspectiveViz'
+
+initPerspective()
 
 const meta: Meta<React.ComponentProps<typeof PerspectiveViz>> = {
   title: 'Rustic UI/Visualization/PerspectiveViz',

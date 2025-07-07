@@ -1,21 +1,11 @@
 import './perspectiveViz.css'
-import '@finos/perspective-viewer/dist/esm/perspective-viewer.inline.js'
 import '@finos/perspective-viewer-datagrid'
 import '@finos/perspective-viewer-d3fc'
 import '@finos/perspective-viewer/dist/css/pro.css'
 import '@finos/perspective-viewer/dist/css/pro-dark.css'
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import perspective from '@finos/perspective/dist/esm/perspective.inline.js'
-import type {
-  Client,
-  Table,
-  View,
-} from '@finos/perspective/dist/wasm/perspective-js.js'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import type { HTMLPerspectiveViewerElement } from '@finos/perspective-viewer/dist/esm/perspective-viewer.inline.js'
+import type { Client, Table, View } from '@finos/perspective'
+import type { HTMLPerspectiveViewerElement } from '@finos/perspective-viewer'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Stack from '@mui/system/Stack'
@@ -29,6 +19,7 @@ import type {
   TableHeader,
   TableSort,
 } from '../../types'
+import { globalPerspectiveWorker } from './perspectiveInit'
 
 function createHeaderMap(headers?: Array<TableHeader>): Record<string, string> {
   if (!headers) {
@@ -67,6 +58,14 @@ export function transformTableData(
  * ```typescript
  * npm i @finos/perspective @finos/perspective-viewer @finos/perspective-viewer-d3fc @finos/perspective-viewer-datagrid
  * ```
+ *
+ * **Important**: You must call `initPerspective()` once at the root level of your application before using this component. Additionally, ensure your Webpack configuration supports WebAssembly (WASM) files by adding the following settings:
+ * ```
+ *   experiments: {
+ *     asyncWebAssembly: true,
+ *     syncWebAssembly: false,
+ *  }
+ * ```
  */
 function PerspectiveViz(props: TableData) {
   if (props.data.length === 0) {
@@ -76,6 +75,7 @@ function PerspectiveViz(props: TableData) {
   const viewerRef = useRef<HTMLPerspectiveViewerElement | null>(null)
   const rusticTheme = useTheme()
   const [hasError, setHasError] = useState<boolean>(false)
+  const [worker, setWorker] = useState<Client>(globalPerspectiveWorker)
   const currentTheme = rusticTheme.palette.mode
   const perspectiveTheme = currentTheme === 'dark' ? 'Pro Dark' : 'Pro Light'
 
@@ -200,50 +200,89 @@ function PerspectiveViz(props: TableData) {
     return transformedConfig
   }
 
+  useEffect(() => {
+    setWorker(globalPerspectiveWorker)
+  }, [globalPerspectiveWorker])
+
   const transformedConfig = props.config && transformTableConfig(props.config)
 
   useEffect(() => {
-    perspective
-      .worker()
-      .then((worker: Client) => {
-        return worker.table(transformTableData(props.data, props.headers))
-      })
-      .then((table: Table) => {
-        const viewer = viewerRef.current
-        if (viewer) {
-          viewer
-            .load(table)
-            .then(() => {
-              viewer
-                .restore({
-                  ...transformedConfig,
-                  theme: perspectiveTheme,
-                  title: props.title,
-                  settings: false,
-                })
-                .then(() => {
-                  const expansionDepth = props.config?.expansionDepth
-                  if (typeof expansionDepth === 'number') {
-                    viewer.getView().then((view: View) =>
-                      view.set_depth(expansionDepth).then(() => {
-                        viewer.resize()
-                      })
-                    )
-                  }
+    let table: Table | null = null
+    let viewInstance: View | null = null
+    let isMounted = true
 
-                  if (viewer.shadowRoot) {
-                    const sheet = new CSSStyleSheet()
-                    sheet.replaceSync(perspectiveVizAdditionalStyles)
-                    viewer.shadowRoot.adoptedStyleSheets.push(sheet)
-                  }
-                })
+    if (worker) {
+      const viewer = viewerRef.current
+      worker
+        .table(transformTableData(props.data, props.headers))
+        .then((newTable) => {
+          table = newTable
+          if (!isMounted) {
+            if (table) {
+              table.delete({ lazy: true })
+              table = null
+            }
+          } else {
+            if (viewer) {
+              if (viewer.shadowRoot) {
+                const sheet = new CSSStyleSheet()
+                sheet.replaceSync(perspectiveVizAdditionalStyles)
+                viewer.shadowRoot.adoptedStyleSheets.push(sheet)
+              }
+
+              return viewer.load(table)
+            }
+          }
+        })
+        .then(() => {
+          if (isMounted && viewer) {
+            return viewer.restore({
+              ...transformedConfig,
+              theme: perspectiveTheme,
+              title: props.title,
+              settings: false,
             })
-            .catch(() => {
-              setHasError(true)
-            })
-        }
-      })
-  }, [props.data, perspectiveTheme])
+          }
+        })
+        .then(() => {
+          if (isMounted && viewer) {
+            return viewer.getView()
+          }
+        })
+        .then((view) => {
+          if (!isMounted) {
+            if (view) {
+              view.delete()
+            }
+          } else {
+            viewInstance = view
+
+            const expansionDepth = props.config?.expansionDepth
+            if (typeof expansionDepth === 'number' && viewInstance) {
+              return viewInstance.set_depth(expansionDepth).then(() => {
+                if (viewerRef.current) {
+                  viewerRef.current.resize()
+                }
+              })
+            }
+          }
+        })
+        .catch(() => {
+          setHasError(true)
+        })
+    }
+
+    return () => {
+      isMounted = false
+
+      if (viewInstance) {
+        viewInstance.delete()
+      }
+      if (table) {
+        table.delete({ lazy: true })
+      }
+    }
+  }, [worker, props.data, perspectiveTheme, props.config])
 
   if (hasError) {
     return (
