@@ -1,3 +1,4 @@
+import { initPerspective } from './perspectiveInit'
 import PerspectiveViz from './perspectiveViz'
 const sampleData = [
   {
@@ -28,6 +29,9 @@ const sampleData = [
     'Order Date': '2021/1/15',
   },
 ]
+
+initPerspective()
+
 describe('PerspectiveViz Component', () => {
   const data = {
     data: sampleData,

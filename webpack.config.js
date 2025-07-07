@@ -49,6 +49,10 @@ const commonConfig = {
     },
     clean: true,
   },
+  experiments: {
+    asyncWebAssembly: true,
+    syncWebAssembly: false,
+  },
 }
 
 module.exports = {

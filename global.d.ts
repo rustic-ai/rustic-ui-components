@@ -4,3 +4,8 @@ declare global {
     SpeechRecognition: any
   }
 }
+
+declare module '*.wasm' {
+  const content: string
+  export default content
+}
