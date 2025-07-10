@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers */
 
-import type { ChatCompletionRequest, Content } from './types'
+import type { ChatCompletionRequest, Content, Sender } from './types'
 
 export function calculateTimeDiffInSeconds(isoDate: string): number {
   const currentDate = new Date()
@@ -174,9 +174,11 @@ export function getDayFromUnixTime(unixTime: number): {
 }
 
 export function toChatRequest(
+  sender: Sender,
   msg?: string,
   files?: { url: string; name?: string }[]
 ): ChatCompletionRequest {
+  const name = sender.id
   const content: Content[] = []
   if (msg && msg?.trim().length) {
     content.push({
@@ -196,6 +198,6 @@ export function toChatRequest(
     }
   }
   return {
-    messages: [{ content: content, role: 'user' }],
+    messages: [{ content: content, role: 'user', name: name }],
   }
 }

@@ -183,6 +183,7 @@ describe('Input', () => {
                   },
                 ],
                 role: 'user',
+                name: '12345678',
               },
             ],
           },

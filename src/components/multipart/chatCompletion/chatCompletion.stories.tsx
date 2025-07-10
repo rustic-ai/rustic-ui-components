@@ -10,7 +10,7 @@ const meta: Meta<React.ComponentProps<typeof ChatCompletion>> = {
 meta.argTypes = {
   ...meta.argTypes,
   showFullName: {
-    defaultValue: { summary: true },
+    table: { defaultValue: { summary: 'true' } },
   },
   messages: {
     table: {

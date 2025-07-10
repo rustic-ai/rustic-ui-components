@@ -143,6 +143,7 @@ describe('TextInput', () => {
                     },
                   ],
                   role: 'user',
+                  name: '12345678',
                 },
               ],
             },

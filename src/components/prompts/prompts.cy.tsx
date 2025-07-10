@@ -44,7 +44,11 @@ describe('Prompts', () => {
         Cypress.sinon.match({
           data: {
             messages: [
-              { content: [{ type: 'text', text: prompts[0] }], role: 'user' },
+              {
+                content: [{ type: 'text', text: prompts[0] }],
+                role: 'user',
+                name: '12345678',
+              },
             ],
           },
           conversationId: commonProps.conversationId,

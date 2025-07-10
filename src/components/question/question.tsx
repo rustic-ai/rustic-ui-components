@@ -39,7 +39,7 @@ export default function Question(props: QuestionProps) {
       sender: props.sender,
       conversationId: props.conversationId,
       format: 'chatCompletionRequest',
-      data: toChatRequest(response.toString()),
+      data: toChatRequest(props.sender, response.toString()),
       inReplyTo: props.messageId,
     }
 

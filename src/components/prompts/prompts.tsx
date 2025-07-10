@@ -29,7 +29,7 @@ export default function Prompts(props: PromptsProps) {
       sender: props.sender,
       conversationId: props.conversationId,
       format: 'chatCompletionRequest',
-      data: toChatRequest(response.toString()),
+      data: toChatRequest(props.sender, response.toString()),
     }
 
     props.ws.send(formattedMessage)

@@ -506,7 +506,7 @@ export type Content =
 
 export interface ChatCompletionRequest {
   /** A list of messages combined into a single displayable message. Supports various content types, including text, images and files. */
-  messages: { content: string | Content[]; role: string }[]
+  messages: { content: string | Content[]; role: string; name?: string }[]
 }
 
 export interface ChatCompletionProps extends DataFormat, ChatCompletionRequest {
