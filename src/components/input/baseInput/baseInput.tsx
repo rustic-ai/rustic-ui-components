@@ -146,6 +146,15 @@ function BaseInputElement(
   )
   const [isMembersMenuShown, setIsMembersMenuShown] = useState<boolean>(false)
 
+  function isSpeechRecognitionSupported(): boolean {
+    return (
+      typeof window !== 'undefined' && !!(window as any).webkitSpeechRecognition
+    )
+  }
+
+  const shouldShowSpeechToText =
+    enableSpeechToText && isSpeechRecognitionSupported()
+
   function getIsSendDisabled() {
     if (typeof props.isSendEnabled == 'boolean') {
       return !props.isSendEnabled
@@ -479,7 +488,7 @@ function BaseInputElement(
                       onEmojiClick={handleEmojiClick}
                       buttonColor={featureButtonColor}
                     />
-                    {enableSpeechToText && speechToTextButtonAdornment}
+                    {shouldShowSpeechToText && speechToTextButtonAdornment}
                   </InputAdornment>
                 ),
               },
