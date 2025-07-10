@@ -110,6 +110,7 @@ export default function MultimodalInput({
 
   function handleSendMessage(formattedMessage: Message): void {
     formattedMessage.data = toChatRequest(
+      formattedMessage.sender,
       formattedMessage.data.text,
       filesInfo.uploaded.map((file) => {
         return { url: file.url, name: file.name }

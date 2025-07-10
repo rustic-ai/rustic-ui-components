@@ -1,6 +1,6 @@
 {
   "name": "@rustic-ai/ui-components",
-  "version": "0.0.47",
+  "version": "0.1.0",
   "keywords": [
     "rustic-ai",
     "conversational-ui"
@@ -101,7 +101,7 @@
     "react-dom": "18.3.1",
     "react-plotly.js": "2.6.0",
     "storybook": "9.0.15",
-    "storybook-addon-mock": "5.0.0",
+    "storybook-addon-mock": "6.0.1",
     "style-loader": "3.3.4",
     "ts-loader": "9.5.2",
     "ts-node": "10.9.2",
