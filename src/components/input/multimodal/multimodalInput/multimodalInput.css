@@ -12,6 +12,10 @@
   gap: 0;
 }
 
+.rustic-multimodal-input .rustic-send-button {
+  margin: 10px 12px;
+}
+
 .rustic-multimodal-input .rustic-input-actions {
   width: 100%;
   position: relative;

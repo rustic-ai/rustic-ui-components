@@ -427,6 +427,7 @@ function BaseInputElement(
           sx={{
             border: '1px solid',
             borderColor: isFocused ? 'secondary.main' : 'action.disabled',
+            backgroundColor: 'background.paper',
           }}
         >
           {emojiSearchResults.length > 0 && inputRef.current && (
