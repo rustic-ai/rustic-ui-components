@@ -83,23 +83,30 @@ const multiModalInputMeta: Meta<React.ComponentProps<typeof MultimodalInput>> =
 multiModalInputMeta.argTypes = {
   ...meta.argTypes,
   ...textInputDescription,
+  supportUpload: {
+    description:
+      'Optional props. If set to `true`, the component will display an upload button and allow file uploads. If set to `false`, the upload button will not be displayed.',
+    table: {
+      type: { summary: 'boolean' },
+    },
+  },
   uploadFileEndpoint: {
     description:
-      'The API endpoint for sending a POST multipart-form request. If the JSON response includes a `fileId` property, it can be used to delete the file later. Path placeholders like `fileName` and `messageId`, will be automatically replaced with the actual file name and message ID.',
+      'The API endpoint for sending a POST multipart-form request. Required if supportUpload is true. If the JSON response includes a `fileId` property, it can be used to delete the file later. Path placeholders like `fileName` and `messageId`, will be automatically replaced with the actual file name and message ID.',
     table: {
       type: { summary: 'string' },
     },
   },
   deleteFileEndpoint: {
     description:
-      'The API endpoint to send a DELETE request. Path placeholders like `fileName`, `fileId` and `messageId`, will be automatically replaced with the corresponding file name, file ID, and message ID.',
+      'The API endpoint to send a DELETE request. Required if supportUpload is true. Path placeholders like `fileName`, `fileId` and `messageId`, will be automatically replaced with the corresponding file name, file ID, and message ID.',
     table: {
       type: { summary: 'string' },
     },
   },
   acceptedFileTypes: {
     description:
-      'The types of files that are allowed to be selected for upload. For safety reasons, only allow file types that can be handled by your server. Avoid accepting executable file types like .exe, .bat, or .msi. For more information, refer to the [mdn web docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#unique_file_type_specifiers).',
+      'The types of files that are allowed to be selected for upload. Required if supportUpload is true. For safety reasons, only allow file types that can be handled by your server. Avoid accepting executable file types like .exe, .bat, or .msi. For more information, refer to the [mdn web docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#unique_file_type_specifiers).',
     table: {
       type: { summary: 'string' },
     },
@@ -174,6 +181,7 @@ export default multiModalInputMeta
 
 export const Default = {
   args: {
+    supportUpload: true,
     emojiDataSource:
       'node_modules/emoji-picker-element-data/en/emojibase/data.json',
     sender: { id: '17shblx8nxk', name: 'Some User' },
@@ -283,5 +291,12 @@ export const HasMenu = {
         acceptedFileTypes: '.mp4, .mov, .avi, .mkv, .wmv, .flv, .webm, .m4v',
       },
     ],
+  },
+}
+
+export const NoUpload = {
+  args: {
+    ...Default.args,
+    supportUpload: false,
   },
 }

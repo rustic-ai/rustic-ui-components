@@ -29,6 +29,8 @@
 
 .rustic-bottom-buttons {
   padding: 8px;
+  /* needed to keep the height consistent when uploader is hidden */
+  height: 56px;
 }
 
 .rustic-multimodal-input .rustic-error-container {

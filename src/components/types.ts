@@ -353,14 +353,38 @@ export interface UploaderProps {
   listFiles?: () => Promise<FileData[]>
 }
 
+// Type for required upload properties when supportUpload is true
+type RequiredUploadProps = {
+  /** Boolean flag to indicate if file upload is supported */
+  supportUpload: true
+  /** The types of files that are allowed to be selected for upload */
+  acceptedFileTypes: string
+  /** The API endpoint where files will be uploaded */
+  uploadFileEndpoint: string
+  /** The API endpoint to delete/cancel uploaded files */
+  deleteFileEndpoint: string
+}
+
+// Type for when upload is disabled
+type DisabledUploadProps = {
+  /** Boolean flag to indicate if file upload is supported */
+  supportUpload?: false
+}
+
+type OptionalUploadProps = Omit<
+  UploaderProps,
+  | 'acceptedFileTypes'
+  | 'uploadFileEndpoint'
+  | 'deleteFileEndpoint'
+  | 'messageId'
+  | 'onFileUpdate'
+  | 'filePreviewsContainer'
+  | 'errorMessagesContainer'
+>
+
 export type MultimodalInputProps = TextInputProps &
-  Omit<
-    UploaderProps,
-    | 'messageId'
-    | 'onFileUpdate'
-    | 'filePreviewsContainer'
-    | 'errorMessagesContainer'
-  >
+  (RequiredUploadProps | DisabledUploadProps) &
+  OptionalUploadProps
 
 export interface ConversationBaseProps {
   /** WebSocket connection to send and receive messages to and from a backend. This value will be set automatically if the component is rendered with `ElementRenderer` or `MessageSpace`. If not provided, the component may not be able to send or receive messages. */

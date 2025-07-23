@@ -35,6 +35,7 @@ describe('Input', () => {
 
     cy.mount(
       <MultimodalInput
+        supportUpload={true}
         sender={testUser}
         conversationId="1"
         ws={mockWsClient}
@@ -273,6 +274,7 @@ describe('Input', () => {
       cy.viewport(viewport)
       cy.mount(
         <MultimodalInput
+          supportUpload={true}
           sender={testUser}
           conversationId="1"
           ws={{
@@ -337,6 +339,7 @@ describe('Input', () => {
       cy.viewport(viewport)
       cy.mount(
         <MultimodalInput
+          supportUpload={true}
           sender={testUser}
           conversationId="1"
           ws={{
@@ -359,6 +362,7 @@ describe('Input', () => {
       cy.viewport(viewport)
       cy.mount(
         <MultimodalInput
+          supportUpload={true}
           sender={testUser}
           conversationId="1"
           ws={{
@@ -392,6 +396,7 @@ describe('Input', () => {
       cy.viewport(viewport)
       cy.mount(
         <MultimodalInput
+          supportUpload={true}
           sender={testUser}
           conversationId="1"
           ws={{
@@ -433,6 +438,7 @@ describe('Input', () => {
       cy.viewport(viewport)
       cy.mount(
         <MultimodalInput
+          supportUpload
           sender={testUser}
           conversationId="1"
           ws={{
@@ -558,6 +564,20 @@ describe('Input', () => {
         .should('contain.text', 'Member1')
         .click()
       cy.get('textarea').invoke('val').should('includes', '@Member1')
+    })
+
+    it(`should hide upload button if supportUpload is false on ${viewport} screen`, () => {
+      cy.viewport(viewport)
+      cy.mount(
+        <MultimodalInput
+          sender={testUser}
+          conversationId="1"
+          ws={{ send: cy.stub(), close: cy.stub(), reconnect: cy.stub() }}
+          label="Type you message"
+        />
+      )
+      cy.get(textField).should('exist')
+      cy.get(uploadButton).should('not.exist')
     })
   })
 })
