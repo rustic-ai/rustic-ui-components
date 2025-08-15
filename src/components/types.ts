@@ -387,6 +387,8 @@ export interface ConversationPropsWithMandatoryWs
 export interface QuestionFormat extends DataFormat {
   /** Array of options to choose from. */
   options: (string | number)[]
+  /** Selected option. If provided, the component will be disabled */
+  data?: string | number
 }
 
 export interface QuestionProps
