@@ -13,7 +13,7 @@ export default {
   },
 }
 
-export const Default = {
+export const TextFields = {
   args: {
     title: 'Provide a delivery address',
     schema: {
@@ -27,11 +27,15 @@ export const Default = {
       },
       required: ['street', 'zip', 'state'],
     },
-    ws: { send: () => {} },
+    ws: {
+      send: (msg: any) => {
+        alert('Form submitted: ' + JSON.stringify(msg))
+      },
+    },
   },
 }
 
-export const Meeting = {
+export const Radio = {
   args: {
     title: 'Choose the days',
     schema: {
@@ -47,11 +51,45 @@ export const Meeting = {
         sunday: { type: 'boolean' },
       },
     },
-    ws: { send: () => {} },
+    ws: {
+      send: (msg: any) => {
+        alert('Form submitted: ' + JSON.stringify(msg))
+      },
+    },
   },
 }
 
-export const ReadOnly = {
+export const ButtonGroup = {
+  args: {
+    title: 'What do you think?',
+    description: 'Choose one of the options below.',
+    schema: {
+      type: 'object',
+      properties: {
+        opinion: {
+          type: 'string',
+          title: 'Your Opinion',
+          uniforms: {
+            component: 'QuestionField',
+            options: [
+              { value: 'yes', label: 'Yes' },
+              { value: 'maybe', label: 'Maybe' },
+              { value: 'no', label: 'No' },
+            ],
+            description: 'Please select one option',
+          },
+        },
+      },
+    },
+    ws: {
+      send: (msg: any) => {
+        alert('Form submitted: ' + JSON.stringify(msg))
+      },
+    },
+  },
+}
+
+export const ReadOnlyRadio = {
   args: {
     title: 'Choose the days',
     schema: {
