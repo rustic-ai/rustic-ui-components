@@ -8,7 +8,6 @@ import Typography from '@mui/material/Typography'
 import React, { useState } from 'react'
 import { v4 as getUUID } from 'uuid'
 
-import { toChatRequest } from '../helper'
 import MarkedMarkdown from '../markdown/markedMarkdown'
 import type { Message, QuestionProps } from '../types'
 
@@ -22,8 +21,9 @@ import type { Message, QuestionProps } from '../types'
  * ```
  */
 export default function Question(props: QuestionProps) {
-  const [selectedOption, setSelectedOption] = useState<string | number>('')
-
+  const [selectedOption, setSelectedOption] = useState<string | number>(
+    props.data || ''
+  )
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
@@ -32,18 +32,15 @@ export default function Question(props: QuestionProps) {
   function handleSubmitResponse(response: string | number) {
     setSelectedOption(response)
     const currentTime = new Date().toISOString()
-
-    const formattedMessage: Message = {
+    const formattedResponseMessage: Message = {
       id: getUUID(),
       timestamp: currentTime,
       sender: props.sender,
       conversationId: props.conversationId,
-      format: 'chatCompletionRequest',
-      data: toChatRequest(props.sender, response.toString()),
-      inReplyTo: props.messageId,
+      format: 'questionResponse',
+      data: { data: response, inReplyTo: props.messageId },
     }
-
-    props.ws?.send(formattedMessage)
+    props.ws?.send(formattedResponseMessage)
   }
 
   const buttonList = props.options.map((option, index) => {
