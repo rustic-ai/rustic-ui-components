@@ -12,6 +12,10 @@ import MarkedMarkdown from '../markdown/markedMarkdown'
 import type { DynamicFormProps, Message } from '../types'
 import QuestionField from './questionField'
 
+const customComponents = {
+  QuestionField: QuestionField,
+}
+
 /**
  * The `UniformsForm` component provides a user interface for rendering a dynamic form using [uniforms](https://uniforms.tools/) and sending the response as a message on the websocket.
  * It is designed to facilitate interactive decision-making and response submission within a conversation or messaging context.
@@ -47,25 +51,13 @@ export default function UniformsForm(props: DynamicFormProps) {
 
   const schemaValidator = createValidator(props.schema)
 
-  const customComponents = {
-    QuestionField: QuestionField,
-  }
-
   const processSchema = (schema: any) => {
     if (schema.properties) {
       Object.keys(schema.properties).forEach((key) => {
         const property = schema.properties[key]
 
-        if (property.properties) {
-          processSchema(property)
-        }
-
-        if (property.uniforms?.component) {
-          const componentName = property.uniforms.component
-          if (componentName in customComponents) {
-            property.uniforms.component =
-              customComponents[componentName as keyof typeof customComponents]
-          }
+        if (property.uniforms?.options) {
+          property.uniforms.component = customComponents.QuestionField
         }
       })
     }

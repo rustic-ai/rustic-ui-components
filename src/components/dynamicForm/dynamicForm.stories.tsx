@@ -70,7 +70,6 @@ export const ButtonGroup = {
           type: 'string',
           title: 'Your Opinion',
           uniforms: {
-            component: 'QuestionField',
             options: [
               { value: 'yes', label: 'Yes' },
               { value: 'maybe', label: 'Maybe' },
