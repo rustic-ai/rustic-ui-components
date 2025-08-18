@@ -82,7 +82,10 @@ meta.argTypes = {
           '  threadId: An optional string representing the identifier of the thread to which this message belongs.\n' +
           '  priority: An optional string representing the priority of the message.\n' +
           '  taggedParticipants: An optional array of strings representing the participants tagged in the message.\n' +
-          '  topic: An optional string representing the identifier of the topic associated with the message.\n',
+          '  topic: An optional string representing the identifier of the topic associated with the message.\n' +
+          '  messageHistory: An optional array of objects representing the message history.\n' +
+          '  processStatus: An optional string representing the process status of the message. \n' +
+          '                 Possible values include "running", "completed", "error"\n',
       },
     },
   },

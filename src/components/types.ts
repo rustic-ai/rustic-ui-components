@@ -24,6 +24,12 @@ export interface ProcessEntry {
   result: string
 }
 
+export enum MessageProcessStatus {
+  Running = 'running',
+  Completed = 'completed',
+  Error = 'error',
+}
+
 export interface Message {
   id: string
   timestamp: string
@@ -37,6 +43,7 @@ export interface Message {
   taggedParticipants?: string[]
   topic?: string
   messageHistory?: ProcessEntry[]
+  processStatus?: MessageProcessStatus
 }
 
 export interface ComponentMap {
