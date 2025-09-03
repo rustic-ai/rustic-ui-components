@@ -5,7 +5,10 @@ import '@finos/perspective-viewer/dist/css/pro.css'
 import '@finos/perspective-viewer/dist/css/pro-dark.css'
 
 import type { Client, Table, View } from '@finos/perspective'
-import type { HTMLPerspectiveViewerElement } from '@finos/perspective-viewer'
+import type {
+  ColumnConfigValues,
+  HTMLPerspectiveViewerElement,
+} from '@finos/perspective-viewer'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Stack from '@mui/system/Stack'
@@ -236,11 +239,23 @@ function PerspectiveViz(props: TableData) {
         })
         .then(() => {
           if (isMounted && viewer) {
+            const dateColConfig = {
+              date_format: {
+                dateStyle: props.config?.dateStyle || 'medium',
+              },
+            }
+            const colConfigs: { [columnName: string]: ColumnConfigValues } = {}
+            props.config?.dateColumns?.forEach((column_name) => {
+              // @ts-expect-error other fields are not needed for date formatting
+              colConfigs[column_name] = dateColConfig
+            })
+
             return viewer.restore({
               ...transformedConfig,
               theme: perspectiveTheme,
               title: props.title,
               settings: false,
+              columns_config: colConfigs,
             })
           }
         })

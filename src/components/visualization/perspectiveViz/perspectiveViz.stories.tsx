@@ -75,6 +75,10 @@ meta.argTypes = {
           '      "contains"\n' +
           '    - The value or an array of values used as\n' +
           '      criteria for filtering.\n' +
+          '  dateColumns: An array of columns which are of datetype. \n' +
+          '    Useful if you want to specify the format to show dates in \n' +
+          '  dateStyle: dateStyle option of Intl.DateTimeFormat - \n' +
+          '    "full" | "long" | "medium" | "short" | "disabled" \n' +
           '\n' +
           '`TableAggregateOption` supports the following values:\n' +
           '  `abs sum`|`and`|`any`|`avg`|`count`|`distinct count`\n' +
@@ -240,4 +244,29 @@ export const NoData = {
   args: {
     data: [],
   },
+}
+
+export const TableWithSimplerDate = {
+  args: {
+    data: generateFakeData(5),
+    headers: tableHeaders,
+    title: 'Table With Default Date Format',
+    config: {
+      dateColumns: ['Order Date'],
+    },
+  },
+  decorators,
+}
+
+export const TableWithFullDateFormat = {
+  args: {
+    data: generateFakeData(10),
+    headers: tableHeaders,
+    title: 'Table With Full Date',
+    config: {
+      dateColumns: ['Order Date'],
+      dateStyle: 'full',
+    },
+  },
+  decorators,
 }
