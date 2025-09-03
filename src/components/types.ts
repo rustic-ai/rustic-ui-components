@@ -198,6 +198,8 @@ export type TableConfig = {
   sort?: TableSort[]
   filter?: TableFilter[]
   expansionDepth?: number
+  dateColumns?: string[]
+  dateStyle?: 'full' | 'long' | 'medium' | 'short' | 'disabled'
 }
 
 export interface TableFormat extends VisualizationFormat {
