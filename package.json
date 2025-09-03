@@ -1,6 +1,6 @@
 {
   "name": "@rustic-ai/ui-components",
-  "version": "0.2.2",
+  "version": "0.2.0",
   "keywords": [
     "rustic-ai",
     "conversational-ui"
@@ -88,7 +88,7 @@
     "eslint-plugin-unused-imports": "4.1.4",
     "husky": "9.1.7",
     "lint-staged": "15.2.2",
-    "mermaid": "11.6.0",
+    "mermaid": "11.10.1",
     "mini-css-extract-plugin": "2.8.1",
     "mock-socket": "9.3.1",
     "ol": "10.5.0",
@@ -137,7 +137,7 @@
     "axios": "^1.9.0",
     "emoji-picker-element": "^1.26.3",
     "emoji-picker-element-data": "^1.7.2",
-    "mermaid": "^11.6.0",
+    "mermaid": "^11.10.1",
     "ol": "^10.5.0",
     "pdfjs-dist": "^4.3.136",
     "plotly.js": "^3.0.1",
