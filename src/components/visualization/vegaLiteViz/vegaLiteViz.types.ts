@@ -11,7 +11,7 @@ type VegaLiteOptions = EmbedOptions<string, Renderers> & {
 }
 
 export interface VegaLiteFormat extends VisualizationFormat {
-  /** Follow Vega-lite's [documentation](https://vega.github.io/vega-lite/) to provide a specification object. Schema should be included in the spec. Need to use 'container' for width or height for responsive chart. For streaming data updates, include a `spec.data.name` to identify the dataset when applying changeset operations. `spec.data.refreshInterval` is needed when loading data from a URL. It will fetch data from the specified URL at the specified interval. */
+  /** Follow Vega-lite's [documentation](https://vega.github.io/vega-lite/) to provide a specification object. Schema should be included in the spec. Need to use 'container' for width or height for responsive chart. For streaming data updates, `spec.data.refreshInterval` is needed when loading data from a URL. It will fetch data from the specified URL at the specified interval. */
   spec: VisualizationSpec
   theme: {
     light?: VegaLiteOptions['theme']

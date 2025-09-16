@@ -95,6 +95,18 @@ function VegaLiteViz({
     return allData
   }
 
+  function getDataSourceName(specData: any) {
+    if (
+      specData &&
+      typeof specData === 'object' &&
+      specData !== null &&
+      'name' in specData
+    ) {
+      return specData.name
+    }
+    return 'source_0'
+  }
+
   const tooltipStyle = {
     backgroundColor: rusticTheme.palette.primary.main,
     color: rusticTheme.palette.background.paper,
@@ -149,7 +161,10 @@ function VegaLiteViz({
       if (!props.options?.config?.font) {
         options.config.font = defaultFont
       }
-      const specToRender = { ...props.spec }
+      const specToRender = {
+        ...props.spec,
+        name: getDataSourceName(props.spec.data),
+      }
       delete specToRender.title
       VegaEmbed(chartRef.current, specToRender, options)
         .then((result) => {
@@ -206,17 +221,10 @@ function VegaLiteViz({
         const newData = extractDataFromUpdates(props.updatedData)
         if (newData.length > 0) {
           try {
-            // Get data source name from spec
             const specData = props.spec?.data
-            if (
-              specData &&
-              typeof specData === 'object' &&
-              'name' in specData &&
-              specData.name
-            ) {
-              const changeSet = vega.changeset().insert(newData)
-              viewRef.current.change(specData.name, changeSet).run()
-            }
+            const dataSourceName = getDataSourceName(specData)
+            const changeSet = vega.changeset().insert(newData)
+            viewRef.current.change(dataSourceName, changeSet).run()
           } catch (error) {
             console.error('Failed to update streaming data:', error)
           }
@@ -266,16 +274,8 @@ function VegaLiteViz({
                 .remove(() => true)
                 .insert(freshData)
 
-              // Get data source name from spec
-              const data = props.spec?.data
-              if (
-                data &&
-                typeof data === 'object' &&
-                'name' in data &&
-                data.name
-              ) {
-                viewRef.current.change(data.name, changeSet).run()
-              }
+              const dataSourceName = getDataSourceName(props.spec?.data)
+              viewRef.current.change(dataSourceName, changeSet).run()
             } catch {
               setHasError(true)
             }

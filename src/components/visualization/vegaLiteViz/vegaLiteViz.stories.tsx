@@ -636,7 +636,6 @@ const streamingSpec = {
   width: 'container' as const,
   height: 'container' as const,
   data: {
-    name: 'source_0',
     values: [
       { x: -4, y: Math.sin(-4 * 0.1) * 50 + 40, category: 'stream' },
       { x: -3, y: Math.sin(-3 * 0.1) * 50 + 45, category: 'stream' },
