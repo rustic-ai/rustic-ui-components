@@ -36,7 +36,7 @@ const MarkedMarkdown = (props: TextData) => {
 
   return (
     <Typography
-      variant="body1"
+      component="div"
       className="rustic-markdown"
       dangerouslySetInnerHTML={{ __html: html }}
     />

@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers */
 
-import type { ChatCompletionRequest, Content, Sender } from './types'
+import type { ChatCompletionRequest, Content, Message, Sender } from './types'
 
 export function calculateTimeDiffInSeconds(isoDate: string): number {
   const currentDate = new Date()
@@ -200,4 +200,55 @@ export function toChatRequest(
   return {
     messages: [{ content: content, role: 'user', name: name }],
   }
+}
+
+export function getCombinedMessages(
+  messages: { [key: string]: Message[] },
+  message: Message
+) {
+  let key
+
+  if (message.format.includes('update')) {
+    key = message.threadId
+  } else if (message.format.includes('Response')) {
+    key = message.data.inReplyTo
+  } else {
+    key = message.id
+  }
+
+  if (!key) {
+    return messages
+  }
+
+  const newMessages = { ...messages }
+  const existingMessages = newMessages[key] || []
+  const originalMessage = existingMessages[0]
+
+  if (
+    message.format.includes('update') &&
+    originalMessage &&
+    originalMessage.sender.id !== message.sender.id
+  ) {
+    key = message.id
+  }
+
+  // Initialize the key in newMessages if it doesn't exist
+  if (!newMessages[key]) {
+    newMessages[key] = []
+  }
+
+  // For Response messages, merge data with the original message
+  if (message.format.includes('Response') && originalMessage) {
+    newMessages[key] = [
+      {
+        ...originalMessage,
+        data: { ...originalMessage.data, ...message.data },
+      },
+      message,
+    ]
+  } else {
+    newMessages[key] = [...newMessages[key], message]
+  }
+
+  return newMessages
 }

@@ -7,6 +7,7 @@ import Box from '@mui/system/Box'
 import React, { type ReactNode, useEffect, useRef, useState } from 'react'
 
 import ElementRenderer from '../elementRenderer/elementRenderer'
+import { getCombinedMessages } from '../helper'
 import Icon from '../icon/icon'
 import MessageCanvas, {
   type MessageContainerProps,
@@ -24,57 +25,6 @@ export interface MessageArchiveProps extends MessageContainerProps {
   infoMessage?: string
   /** Loading icon to display while fetching historic messages. If not provided, a default spinner will be shown */
   loadingIcon?: ReactNode
-}
-
-function getCombinedMessages(
-  messages: { [key: string]: Message[] },
-  message: Message
-) {
-  let key
-
-  if (message.format.includes('update')) {
-    key = message.threadId
-  } else if (message.format.includes('Response')) {
-    key = message.data.inReplyTo
-  } else {
-    key = message.id
-  }
-
-  if (!key) {
-    return messages
-  }
-
-  const newMessages = { ...messages }
-  const existingMessages = newMessages[key] || []
-  const originalMessage = existingMessages[0]
-
-  if (
-    message.format.includes('update') &&
-    originalMessage &&
-    originalMessage.sender.id !== message.sender.id
-  ) {
-    key = message.id
-  }
-
-  // Initialize the key in newMessages if it doesn't exist
-  if (!newMessages[key]) {
-    newMessages[key] = []
-  }
-
-  // For Response messages, merge data with the original message
-  if (message.format.includes('Response') && originalMessage) {
-    newMessages[key] = [
-      {
-        ...originalMessage,
-        data: { ...originalMessage.data, ...message.data },
-      },
-      message,
-    ]
-  } else {
-    newMessages[key] = [...newMessages[key], message]
-  }
-
-  return newMessages
 }
 
 /**
