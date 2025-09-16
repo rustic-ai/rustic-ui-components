@@ -18,6 +18,8 @@ export interface VegaLiteFormat extends VisualizationFormat {
     dark: VegaLiteOptions['theme']
   }
   options?: VegaLiteOptions
+  /** Refresh interval in milliseconds for automatically reloading data from URLs. Only applies when `spec.data.url` is specified. */
+  refreshIntervalInMs?: number
 }
 
 export type VegaLiteData = VegaLiteFormat & Updates<VegaLiteFormat>

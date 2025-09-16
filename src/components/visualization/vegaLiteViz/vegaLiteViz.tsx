@@ -9,12 +9,13 @@ import axios from 'axios'
 import React, { useEffect, useRef, useState } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import * as vega from 'vega'
-import { default as VegaEmbed, type VisualizationSpec } from 'vega-embed'
+import { default as VegaEmbed } from 'vega-embed'
 
 import MarkedMarkdown from '../../markdown/markedMarkdown'
 import PopoverMenu, { type PopoverMenuItem } from '../../menu/popoverMenu'
 import type { VegaLiteProps } from './vegaLiteViz.types'
 
+const defaultSourceName = 'source_0'
 /** The `VegaLiteViz` component is a versatile tool for visualizing data using the Vega-Lite grammar. With support for various graphic types, it empowers users to create engaging and informative data visualizations effortlessly.
  *
  * Note: `vega-embed` is not bundled, so please install the following package using npm:
@@ -27,6 +28,7 @@ function VegaLiteViz({
   theme = {
     dark: 'dark' as const,
   },
+  refreshIntervalInMs = 0,
   ...props
 }: VegaLiteProps) {
   const chartRef = useRef<HTMLDivElement>(null)
@@ -95,18 +97,6 @@ function VegaLiteViz({
     return allData
   }
 
-  function getDataSourceName(specData: any) {
-    if (
-      specData &&
-      typeof specData === 'object' &&
-      specData !== null &&
-      'name' in specData
-    ) {
-      return specData.name
-    }
-    return 'source_0'
-  }
-
   const tooltipStyle = {
     backgroundColor: rusticTheme.palette.primary.main,
     color: rusticTheme.palette.background.paper,
@@ -163,7 +153,7 @@ function VegaLiteViz({
       }
       const specToRender = {
         ...props.spec,
-        name: getDataSourceName(props.spec.data),
+        name: defaultSourceName,
       }
       delete specToRender.title
       VegaEmbed(chartRef.current, specToRender, options)
@@ -189,7 +179,9 @@ function VegaLiteViz({
           setHasError(false)
 
           // Set up auto-refresh for URL data sources
-          setupAutoRefresh()
+          if (refreshIntervalInMs > 0) {
+            setupAutoRefresh()
+          }
         })
         .catch(() => {
           setHasError(true)
@@ -221,10 +213,8 @@ function VegaLiteViz({
         const newData = extractDataFromUpdates(props.updatedData)
         if (newData.length > 0) {
           try {
-            const specData = props.spec?.data
-            const dataSourceName = getDataSourceName(specData)
             const changeSet = vega.changeset().insert(newData)
-            viewRef.current.change(dataSourceName, changeSet).run()
+            viewRef.current.change(defaultSourceName, changeSet).run()
           } catch (error) {
             console.error('Failed to update streaming data:', error)
           }
@@ -237,20 +227,6 @@ function VegaLiteViz({
 
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
-  function getUrlDataSource(spec: VisualizationSpec) {
-    if (
-      spec.data &&
-      typeof spec.data === 'object' &&
-      'url' in spec.data &&
-      'refreshInterval' in spec.data
-    ) {
-      return {
-        url: spec.data.url,
-        refreshInterval: spec.data.refreshInterval as number,
-      }
-    }
-  }
-
   function setupAutoRefresh() {
     if (viewRef.current && props.spec) {
       if (refreshIntervalRef.current) {
@@ -258,15 +234,19 @@ function VegaLiteViz({
         refreshIntervalRef.current = null
       }
 
-      const urlDataSource = getUrlDataSource(props.spec)
-
-      if (urlDataSource) {
+      const specData = props.spec.data
+      if (
+        specData &&
+        typeof specData === 'object' &&
+        'url' in specData &&
+        specData.url
+      ) {
         const interval = setInterval(async () => {
           if (viewRef.current) {
             try {
               // Manually fetch fresh data
               const loader = createLoader()
-              const freshDataText = await loader.load(urlDataSource.url)
+              const freshDataText = await loader.load(specData.url)
               const freshData = JSON.parse(freshDataText)
 
               const changeSet = vega
@@ -274,13 +254,12 @@ function VegaLiteViz({
                 .remove(() => true)
                 .insert(freshData)
 
-              const dataSourceName = getDataSourceName(props.spec?.data)
-              viewRef.current.change(dataSourceName, changeSet).run()
+              viewRef.current.change(defaultSourceName, changeSet).run()
             } catch {
               setHasError(true)
             }
           }
-        }, urlDataSource.refreshInterval)
+        }, refreshIntervalInMs)
 
         refreshIntervalRef.current = interval
       }
