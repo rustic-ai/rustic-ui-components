@@ -15,6 +15,7 @@ import MarkedMarkdown from '../../markdown/markedMarkdown'
 import PopoverMenu, { type PopoverMenuItem } from '../../menu/popoverMenu'
 import type { VegaLiteProps } from './vegaLiteViz.types'
 
+const defaultSourceName = 'source_0'
 /** The `VegaLiteViz` component is a versatile tool for visualizing data using the Vega-Lite grammar. With support for various graphic types, it empowers users to create engaging and informative data visualizations effortlessly.
  *
  * Note: `vega-embed` is not bundled, so please install the following package using npm:
@@ -27,9 +28,11 @@ function VegaLiteViz({
   theme = {
     dark: 'dark' as const,
   },
+  refreshIntervalInMs = 0,
   ...props
 }: VegaLiteProps) {
   const chartRef = useRef<HTMLDivElement>(null)
+  const viewRef = useRef<vega.View | null>(null)
   const [hasError, setHasError] = useState<boolean>(false)
 
   const rusticTheme: Theme = useTheme()
@@ -78,6 +81,20 @@ function VegaLiteViz({
     }
 
     return loader
+  }
+
+  function extractDataFromUpdates(updateData: VegaLiteProps['updatedData']) {
+    const allData: Record<string, unknown>[] = []
+
+    updateData?.forEach((format) => {
+      if (format.spec?.data && 'values' in format.spec.data) {
+        const values = format.spec.data.values
+        if (Array.isArray(values)) {
+          allData.push(...values)
+        }
+      }
+    })
+    return allData
   }
 
   const tooltipStyle = {
@@ -134,7 +151,10 @@ function VegaLiteViz({
       if (!props.options?.config?.font) {
         options.config.font = defaultFont
       }
-      const specToRender = { ...props.spec }
+      const specToRender = {
+        ...props.spec,
+        name: defaultSourceName,
+      }
       delete specToRender.title
       VegaEmbed(chartRef.current, specToRender, options)
         .then((result) => {
@@ -155,7 +175,13 @@ function VegaLiteViz({
             })
           })
 
+          viewRef.current = result.view
           setHasError(false)
+
+          // Set up auto-refresh for URL data sources
+          if (refreshIntervalInMs > 0) {
+            setupAutoRefresh()
+          }
         })
         .catch(() => {
           setHasError(true)
@@ -176,6 +202,77 @@ function VegaLiteViz({
       window.removeEventListener('resize', handleResize)
     }
   }, [props.spec, isDarkTheme])
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (
+        props.updatedData &&
+        props.updatedData.length > 0 &&
+        viewRef.current
+      ) {
+        const newData = extractDataFromUpdates(props.updatedData)
+        if (newData.length > 0) {
+          try {
+            const changeSet = vega.changeset().insert(newData)
+            viewRef.current.change(defaultSourceName, changeSet).run()
+          } catch (error) {
+            console.error('Failed to update streaming data:', error)
+          }
+        }
+      }
+    }, 0) // Small delay to ensure chart is ready
+
+    return () => clearTimeout(timeoutId)
+  }, [props.updatedData])
+
+  const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  function setupAutoRefresh() {
+    if (viewRef.current && props.spec) {
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current)
+        refreshIntervalRef.current = null
+      }
+
+      const specData = props.spec.data
+      if (
+        specData &&
+        typeof specData === 'object' &&
+        'url' in specData &&
+        specData.url
+      ) {
+        const interval = setInterval(async () => {
+          if (viewRef.current) {
+            try {
+              // Manually fetch fresh data
+              const loader = createLoader()
+              const freshDataText = await loader.load(specData.url)
+              const freshData = JSON.parse(freshDataText)
+
+              const changeSet = vega
+                .changeset()
+                .remove(() => true)
+                .insert(freshData)
+
+              viewRef.current.change(defaultSourceName, changeSet).run()
+            } catch {
+              setHasError(true)
+            }
+          }
+        }, refreshIntervalInMs)
+
+        refreshIntervalRef.current = interval
+      }
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current)
+      }
+    }
+  }, [])
 
   if (hasError) {
     return <Typography variant="body2">Failed to load the chart.</Typography>

@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers */
 import type { Meta, StoryFn } from '@storybook/react-webpack5'
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import VegaLiteViz from './vegaLiteViz'
 const meta: Meta<React.ComponentProps<typeof VegaLiteViz>> = {
@@ -52,7 +52,7 @@ const decorators = [
 export const BarChart = {
   args: {
     spec: {
-      $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+      $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
       width: 'container',
       height: 'container',
       data: {
@@ -81,7 +81,7 @@ export const BarChart = {
 export const PieChart = {
   args: {
     spec: {
-      $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+      $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
       width: 'container',
       height: 'container',
       padding: 8,
@@ -111,7 +111,7 @@ export const PieChart = {
 export const WithTitleAndDescription = {
   args: {
     spec: {
-      $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+      $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
       width: 'container',
       height: '200',
       title: 'Number of Orders by Product',
@@ -150,7 +150,7 @@ export const WithTitleAndDescription = {
 export const InvalidChart = {
   args: {
     spec: {
-      $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+      $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
       data: {
         values: [
           { a: 'A', b: 28 },
@@ -174,7 +174,7 @@ export const InteractiveMap = {
         },
       }),
     spec: {
-      $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+      $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
       width: 'container',
       height: 'container',
       title: 'Connections among Major U.S. Airports',
@@ -272,7 +272,7 @@ export const InteractiveMap = {
 export const Map = {
   args: {
     spec: {
-      $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+      $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
       width: 700,
       height: 700,
       title: 'London Tube Lines',
@@ -398,7 +398,7 @@ export const Map = {
 export const GlobeVisualization = {
   args: {
     spec: {
-      $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+      $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
       title: ['Globe Visualization', 'of Earthquakes'],
 
       width: 'container',
@@ -489,7 +489,7 @@ export const GlobeVisualization = {
 export const Heatmap = {
   args: {
     spec: {
-      $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+      $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
       width: 'container',
       height: 'container',
       data: {
@@ -540,7 +540,7 @@ export const Heatmap = {
 export const WeatherPlot = {
   args: {
     spec: {
-      $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+      $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
       width: 'container',
       height: 'container',
       config: {
@@ -631,12 +631,109 @@ export const WeatherPlot = {
   decorators,
 }
 
+const streamingSpec = {
+  $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
+  width: 'container' as const,
+  height: 'container' as const,
+  data: {
+    values: [
+      { x: -4, y: Math.sin(-4 * 0.1) * 50 + 40, category: 'stream' },
+      { x: -3, y: Math.sin(-3 * 0.1) * 50 + 45, category: 'stream' },
+      { x: -2, y: Math.sin(-2 * 0.1) * 50 + 52, category: 'stream' },
+      { x: -1, y: Math.sin(-1 * 0.1) * 50 + 48, category: 'stream' },
+      { x: 0, y: 50, category: 'stream' },
+    ],
+  },
+  mark: {
+    type: 'line' as const,
+    interpolate: 'linear' as const,
+    strokeWidth: 2,
+    point: {
+      filled: true,
+      size: 50,
+    },
+  },
+  encoding: {
+    x: {
+      field: 'x',
+      type: 'quantitative' as const,
+      scale: { zero: false },
+      axis: { title: 'Time' },
+    },
+    y: {
+      field: 'y',
+      type: 'quantitative' as const,
+      axis: { title: 'Value' },
+    },
+    color: { field: 'category', type: 'nominal' as const },
+  },
+}
+
+export const StreamingLineChart: StoryFn = () => {
+  const [newPoints, setNewPoints] = useState<
+    Array<{ x: number; y: number; category: string }>
+  >([])
+  const counterRef = useRef(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      counterRef.current += 1
+      const newPoint = {
+        x: counterRef.current,
+        y: Math.sin(counterRef.current * 0.1) * 50 + Math.random() * 20,
+        category: 'stream',
+      }
+
+      // Only send the new single point
+      setNewPoints([newPoint])
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  const updatedData =
+    newPoints.length > 0
+      ? [
+          {
+            spec: {
+              ...streamingSpec,
+              data: {
+                values: newPoints,
+              },
+            },
+            theme: {
+              dark: 'dark' as const,
+            },
+          },
+        ]
+      : undefined
+
+  return (
+    <div
+      style={{
+        width: 'clamp(250px, 70vw, 1000px)',
+        height: 'clamp(150px, 40vh, 400px)',
+      }}
+    >
+      <VegaLiteViz
+        spec={streamingSpec}
+        updatedData={updatedData}
+        theme={{
+          dark: 'dark',
+        }}
+        title="Streaming Line Chart"
+        description="This chart demonstrates real-time data streaming with new points added every second."
+      />
+    </div>
+  )
+}
+
 export const IsotypeGrid = {
   args: {
     title: 'Isotype Grid',
     description: '**Drag region to select**.',
     spec: {
-      $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+      $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
       width: 'container',
       height: 'container',
       data: {
