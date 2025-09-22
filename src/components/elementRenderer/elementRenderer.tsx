@@ -3,7 +3,7 @@ import React from 'react'
 
 import type { ComponentMap, Message, Sender, WebSocketClient } from '../types'
 
-interface ElementRendererProps {
+export interface ElementRendererProps {
   sender?: Sender
   ws?: WebSocketClient
   messages: Message[]
