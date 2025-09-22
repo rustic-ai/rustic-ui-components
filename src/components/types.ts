@@ -22,6 +22,10 @@ export interface ProcessEntry {
   agent: AgentTag
   origin: string
   result: string
+  processor: string
+  from_topic?: string
+  to_topics?: string[]
+  reason?: string[]
 }
 
 export enum MessageProcessStatus {
