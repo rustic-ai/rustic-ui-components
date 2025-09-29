@@ -477,6 +477,7 @@ function BaseInputElement(
             inputRef={inputRef}
             color="secondary"
             size="small"
+            autoFocus={props.autoFocus}
             slotProps={{
               input: {
                 endAdornment: (
