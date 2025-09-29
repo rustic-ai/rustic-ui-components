@@ -316,6 +316,8 @@ export interface BaseInputProps {
   getMembers?: () => Promise<Participant[]>
   /** Used to set inReplyTo and messageHistory */
   lastMsg?: Message
+  /** If the input should be focused automatically **/
+  autoFocus?: boolean
 }
 
 export interface TextInputProps
