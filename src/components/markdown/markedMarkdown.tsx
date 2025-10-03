@@ -35,11 +35,15 @@ const MarkedMarkdown = (props: TextData) => {
   }, [props.text, props.updatedData])
 
   return (
-    <Typography
-      component="div"
-      className="rustic-markdown"
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
+    <>
+      {props.title && <Typography variant="h6">{props.title}</Typography>}
+      {props.description && <MarkedMarkdown text={props.description} />}
+      <Typography
+        component="div"
+        className="rustic-markdown"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    </>
   )
 }
 
