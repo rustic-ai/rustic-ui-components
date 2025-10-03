@@ -25,6 +25,8 @@ export interface MessageArchiveProps extends MessageContainerProps {
   infoMessage?: string
   /** Loading icon to display while fetching historic messages. If not provided, a default spinner will be shown */
   loadingIcon?: ReactNode
+  /** If true, disables all scrolling functionalities including auto-scroll and scroll down button */
+  disableAutoScroll?: boolean
 }
 
 /**
@@ -37,6 +39,7 @@ export interface MessageArchiveProps extends MessageContainerProps {
 
 export default function MessageArchive({
   scrollDownLabel = 'Scroll down',
+  disableAutoScroll = false,
   ...props
 }: MessageArchiveProps) {
   const scrollEndRef = useRef<HTMLDivElement>(null)
@@ -125,13 +128,13 @@ export default function MessageArchive({
   }, [props.getHistoricMessages])
 
   useEffect(() => {
-    if (!isLoading && chatMessages) {
+    if (!isLoading && chatMessages && !disableAutoScroll) {
       scrollDown()
     }
 
     const container = containerRef.current
 
-    if (container) {
+    if (container && !disableAutoScroll) {
       checkIntersection()
 
       container.addEventListener('scroll', checkIntersection)
@@ -142,11 +145,13 @@ export default function MessageArchive({
         window.removeEventListener('resize', checkIntersection)
       }
     }
-  }, [isLoading, chatMessages])
+  }, [isLoading, chatMessages, disableAutoScroll])
 
   useEffect(() => {
-    scrollDown()
-  }, [areVideosLoaded])
+    if (!disableAutoScroll) {
+      scrollDown()
+    }
+  }, [areVideosLoaded, disableAutoScroll])
 
   if (isLoading) {
     return (
@@ -191,21 +196,23 @@ export default function MessageArchive({
               </MessageCanvas>
             )
           })}
-          {!isScrolledToBottom && !isScrollButtonHidden && (
-            <Chip
-              data-cy="scroll-down-button"
-              color="secondary"
-              className="rustic-scroll-down-button"
-              size="medium"
-              onClick={scrollDown}
-              label={
-                <>
-                  {scrollDownLabel}
-                  <Icon name="arrow_downward" />
-                </>
-              }
-            />
-          )}
+          {!isScrolledToBottom &&
+            !isScrollButtonHidden &&
+            !disableAutoScroll && (
+              <Chip
+                data-cy="scroll-down-button"
+                color="secondary"
+                className="rustic-scroll-down-button"
+                size="medium"
+                onClick={scrollDown}
+                label={
+                  <>
+                    {scrollDownLabel}
+                    <Icon name="arrow_downward" />
+                  </>
+                }
+              />
+            )}
         </Box>
       </Box>
     )

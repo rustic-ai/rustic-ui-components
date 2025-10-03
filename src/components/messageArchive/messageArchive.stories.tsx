@@ -448,6 +448,14 @@ export const Default = {
   },
 }
 
+export const WithDisabledAutoScroll = {
+  args: {
+    ...Default.args,
+    disableAutoScroll: true,
+    infoMessage: '',
+  },
+}
+
 export const WithRejectedPromise = {
   args: {
     infoMessage: 'This chat has been archived.',

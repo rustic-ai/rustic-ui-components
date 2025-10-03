@@ -23,6 +23,8 @@ export interface MessageSpaceProps extends MessageContainerProps {
   receivedMessages?: Message[]
   /** Text label for scroll down button. Default value is 'scroll down'. */
   scrollDownLabel?: string
+  /** If true, disables all scrolling functionalities including auto-scroll and scroll down button */
+  disableAutoScroll?: boolean
 }
 
 function usePrevious(value: number) {
@@ -43,6 +45,7 @@ function usePrevious(value: number) {
 
 export default function MessageSpace({
   scrollDownLabel = 'Scroll down',
+  disableAutoScroll = false,
   ...props
 }: MessageSpaceProps) {
   const scrollEndRef = useRef<HTMLDivElement>(null)
@@ -96,18 +99,20 @@ export default function MessageSpace({
   useEffect(() => {
     const container = containerRef.current
 
-    checkIntersection()
+    if (!disableAutoScroll) {
+      checkIntersection()
 
-    if (container) {
-      container.addEventListener('scroll', checkIntersection)
-      window.addEventListener('resize', checkIntersection)
+      if (container) {
+        container.addEventListener('scroll', checkIntersection)
+        window.addEventListener('resize', checkIntersection)
 
-      return () => {
-        container.removeEventListener('scroll', checkIntersection)
-        window.removeEventListener('resize', checkIntersection)
+        return () => {
+          container.removeEventListener('scroll', checkIntersection)
+          window.removeEventListener('resize', checkIntersection)
+        }
       }
     }
-  }, [isScrolledToBottom])
+  }, [isScrolledToBottom, disableAutoScroll])
 
   function scrollDown() {
     if (getVideoStatus()) {
@@ -126,19 +131,21 @@ export default function MessageSpace({
   }
 
   useEffect(() => {
-    scrollDown()
-  }, [areVideosLoaded])
+    if (!disableAutoScroll) {
+      scrollDown()
+    }
+  }, [areVideosLoaded, disableAutoScroll])
 
   useEffect(() => {
     const hasNewMessage =
       previousMessagesLength !== 0 &&
       currentMessagesLength > previousMessagesLength
 
-    if (isScrolledToBottom && hasNewMessage) {
+    if (isScrolledToBottom && hasNewMessage && !disableAutoScroll) {
       hideScrollButton()
       scrollDown()
     }
-  }, [isScrolledToBottom, Object.keys(chatMessages).length])
+  }, [isScrolledToBottom, Object.keys(chatMessages).length, disableAutoScroll])
 
   useEffect(() => {
     let messageDict: { [messageId: string]: Message[] } = {}
@@ -236,7 +243,7 @@ export default function MessageSpace({
             }
           }
         })}
-        {!isScrolledToBottom && !isScrollButtonHidden && (
+        {!isScrolledToBottom && !isScrollButtonHidden && !disableAutoScroll && (
           <Chip
             data-cy="scroll-down-button"
             color="secondary"

@@ -451,3 +451,10 @@ export const Default = {
     },
   },
 }
+
+export const WithDisabledAutoScroll = {
+  args: {
+    ...Default.args,
+    disableAutoScroll: true,
+  },
+}
