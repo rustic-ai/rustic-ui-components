@@ -20,9 +20,13 @@ import type { TextData } from '../types'
  * ``` */
 const Text = (props: TextData) => {
   return (
-    <Typography variant="body1" className="rustic-text">
-      {DOMPurify.sanitize(props.text)}
-    </Typography>
+    <>
+      {props.title && <Typography variant="h6">{props.title}</Typography>}
+      {props.description && <Typography>{props.description}</Typography>}
+      <Typography variant="body1" className="rustic-text">
+        {DOMPurify.sanitize(props.text)}
+      </Typography>
+    </>
   )
 }
 
