@@ -9,12 +9,11 @@ import {
   FCCalendar,
   Image,
   MarkedMarkdown,
-  MarkedStreamingMarkdown,
   type Message,
   Multipart,
   OpenLayersMap,
+  Prompts,
   Sound,
-  StreamingText,
   Table,
   Text,
   UniformsForm,
@@ -154,7 +153,7 @@ const tableData = [
   },
 ]
 
-const streamingMarkdownRootMessageId = getUUID()
+const updateIdentifier = getUUID()
 
 const loadingTime = 1000
 export const Default = {
@@ -170,35 +169,36 @@ export const Default = {
               ...humanMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:00:00.000Z',
-              format: 'text',
+              format: 'TextFormat',
               data: {
                 text: 'Could you show me an example of the markdown component?',
               },
             },
             {
               ...agentMessageData,
-              id: streamingMarkdownRootMessageId,
+              id: getUUID(),
               timestamp: '2024-01-02T00:01:00.000Z',
-              format: 'streamingMarkdown',
+              format: 'updateMarkdownFormat',
               data: {
                 text: '# Title\n\n---\n\n ## Subtitle',
+                updateId: updateIdentifier,
               },
             },
             {
               ...agentMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:02:01.000Z',
-              format: 'updateStreamingMarkdown',
-              threadId: streamingMarkdownRootMessageId,
+              format: 'updateMarkdownFormat',
               data: {
                 text: '\n\nThis is a paragraph. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n- This is an **inline notation**\n- This is a *inline notation*.\n- This is a _inline notation_.\n- This is a __inline notation__.\n- This is a ~~inline notation~~.\n\n```\nconst string = "Hello World"\nconst number = 123\n```\n\n> This is a blockquote.\n\n1. Item 1\n2. Item 2\n3. Item 3\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Item 1   | Item 2   | Item 3   |',
+                updateId: updateIdentifier,
               },
             },
             {
               ...humanMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:04:00.000Z',
-              format: 'text',
+              format: 'TextFormat',
               data: {
                 text: 'Could you show me an example of the calendar component?',
               },
@@ -207,7 +207,7 @@ export const Default = {
               ...agentMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:05:00.000Z',
-              format: 'calendar',
+              format: 'CalendarFormat',
               data: {
                 events: [
                   {
@@ -246,7 +246,7 @@ export const Default = {
               ...humanMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:06:00.000Z',
-              format: 'text',
+              format: 'TextFormat',
               data: {
                 text: 'Could you show me an example of the table component?',
               },
@@ -255,7 +255,7 @@ export const Default = {
               ...agentMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:07:00.000Z',
-              format: 'table',
+              format: 'TableFormat',
               data: {
                 title: 'Nutrient Data Comparison Across Various Types of Milk',
                 description:
@@ -267,7 +267,7 @@ export const Default = {
               ...humanMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:10:00.000Z',
-              format: 'text',
+              format: 'TextFormat',
               data: {
                 text: 'Could you show me an example of the image component?',
               },
@@ -276,7 +276,7 @@ export const Default = {
               ...agentMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:11:00.000Z',
-              format: 'image',
+              format: 'ImageFormat',
               data: {
                 src: 'images/image-component-example.png',
                 alt: 'A curved facade covered in white latticework',
@@ -288,7 +288,7 @@ export const Default = {
               ...humanMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:12:00.000Z',
-              format: 'text',
+              format: 'TextFormat',
               data: {
                 text: 'Could you show me an example of the map component?',
               },
@@ -297,7 +297,7 @@ export const Default = {
               ...agentMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:13:00.000Z',
-              format: 'map',
+              format: 'LocationFormat',
               data: {
                 longitude: -123.1115,
                 latitude: 49.2856,
@@ -307,7 +307,7 @@ export const Default = {
               ...humanMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:14:00.000Z',
-              format: 'text',
+              format: 'TextFormat',
               data: {
                 text: 'Could you show me an example of the code snippet component?',
               },
@@ -316,7 +316,7 @@ export const Default = {
               ...agentMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:15:00.000Z',
-              format: 'codeSnippet',
+              format: 'CodeFormat',
               data: {
                 code: code,
                 language: 'javascript',
@@ -326,7 +326,7 @@ export const Default = {
               ...humanMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:16:00.000Z',
-              format: 'text',
+              format: 'TextFormat',
               data: {
                 text: 'Could you show me an example of the sound component?',
               },
@@ -335,7 +335,7 @@ export const Default = {
               ...agentMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:17:00.000Z',
-              format: 'sound',
+              format: 'AudioFormat',
               data: {
                 src: 'audioExamples/audioStorybook.mp3',
                 title: 'Sound Title',
@@ -345,7 +345,7 @@ export const Default = {
               ...humanMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:18:00.000Z',
-              format: 'text',
+              format: 'TextFormat',
               data: {
                 text: 'Could you show me an example of the video component?',
               },
@@ -354,7 +354,7 @@ export const Default = {
               ...agentMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:19:00.000Z',
-              format: 'video',
+              format: 'VideoFormat',
               data: {
                 src: 'videoExamples/videoStorybook.mp4',
                 title: 'Video Title',
@@ -364,7 +364,7 @@ export const Default = {
               ...humanMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:20:00.000Z',
-              format: 'text',
+              format: 'TextFormat',
               data: {
                 text: 'Could you show me an example of the multipart component?',
               },
@@ -373,7 +373,7 @@ export const Default = {
               ...agentMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:21:00.000Z',
-              format: 'multipart',
+              format: 'FilesWithTextFormat',
               data: {
                 text: 'Here is an example of the multipart component:',
                 files: [
@@ -386,7 +386,7 @@ export const Default = {
               ...agentMessageData,
               id: 'formId',
               timestamp: '2024-01-02T00:21:00.000Z',
-              format: 'form',
+              format: 'FormFormat',
               data: {
                 title: 'Choose the days',
                 schema: {
@@ -406,7 +406,7 @@ export const Default = {
               ...humanMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:21:00.000Z',
-              format: 'formResponse',
+              format: 'FormFormatResponse',
               data: {
                 inReplyTo: 'formId',
                 data: {
@@ -422,19 +422,18 @@ export const Default = {
       })
     },
     supportedElements: {
-      text: Text,
-      streamingText: StreamingText,
-      markdown: MarkedMarkdown,
-      streamingMarkdown: MarkedStreamingMarkdown,
-      image: Image,
-      map: OpenLayersMap,
-      table: Table,
-      calendar: FCCalendar,
-      codeSnippet: CodeSnippet,
-      sound: Sound,
-      video: Video,
-      multipart: Multipart,
-      form: UniformsForm,
+      TextFormat: Text,
+      MarkdownFormat: MarkedMarkdown,
+      ImageFormat: Image,
+      LocationFormat: OpenLayersMap,
+      TableFormat: Table,
+      CalendarFormat: FCCalendar,
+      FormFormat: UniformsForm,
+      PromptsFormat: Prompts,
+      CodeFormat: CodeSnippet,
+      AudioFormat: Sound,
+      VideoFormat: Video,
+      FilesWithTextFormat: Multipart,
     },
     getProfileComponent: getProfileIconAndName,
     getActionsComponent: (message: Message) => {
@@ -479,19 +478,18 @@ export const WithRejectedPromise = {
       })
     },
     supportedElements: {
-      text: Text,
-      streamingText: StreamingText,
-      markdown: MarkedMarkdown,
-      streamingMarkdown: MarkedStreamingMarkdown,
-      image: Image,
-      map: OpenLayersMap,
-      table: Table,
-      calendar: FCCalendar,
-      codeSnippet: CodeSnippet,
-      sound: Sound,
-      video: Video,
-      multipart: Multipart,
-      form: UniformsForm,
+      TextFormat: Text,
+      MarkdownFormat: MarkedMarkdown,
+      ImageFormat: Image,
+      LocationFormat: OpenLayersMap,
+      TableFormat: Table,
+      CalendarFormat: FCCalendar,
+      FormFormat: UniformsForm,
+      PromptsFormat: Prompts,
+      CodeFormat: CodeSnippet,
+      AudioFormat: Sound,
+      VideoFormat: Video,
+      FilesWithTextFormat: Multipart,
     },
     getProfileComponent: getProfileIconAndName,
     getActionsComponent: (message: Message) => {

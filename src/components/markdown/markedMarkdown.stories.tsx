@@ -12,7 +12,7 @@ const meta: Meta<React.ComponentProps<typeof MarkedMarkdown>> = {
     },
     updatedData: {
       description:
-        'New text to overwrite (`MarkedMarkdown`) or to be appended (`MarkedStreamingMarkdown`) to the existing text.',
+        'New messages with content to overwrite or to be appended to the existing content.',
     },
   },
   parameters: {

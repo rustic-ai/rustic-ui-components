@@ -208,8 +208,8 @@ export function getCombinedMessages(
 ) {
   let key
 
-  if (message.format.includes('update')) {
-    key = message.threadId
+  if (message.format.startsWith('update')) {
+    key = message.data.updateId
   } else if (message.format.includes('Response')) {
     key = message.data.inReplyTo
   } else {
@@ -225,7 +225,7 @@ export function getCombinedMessages(
   const originalMessage = existingMessages[0]
 
   if (
-    message.format.includes('update') &&
+    message.format.startsWith('update') &&
     originalMessage &&
     originalMessage.sender.id !== message.sender.id
   ) {
