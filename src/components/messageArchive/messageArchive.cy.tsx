@@ -11,10 +11,9 @@ import {
   FCCalendar,
   Image,
   MarkedMarkdown,
-  MarkedStreamingMarkdown,
   type Message,
   OpenLayersMap,
-  StreamingText,
+  Prompts,
   Table,
   Text,
   UniformsForm,
@@ -24,15 +23,14 @@ import MessageArchive from './messageArchive'
 
 describe('MessageArchive Component', () => {
   const supportedElements = {
-    text: Text,
-    streamingText: StreamingText,
-    markdown: MarkedMarkdown,
-    streamingMarkdown: MarkedStreamingMarkdown,
-    image: Image,
-    map: OpenLayersMap,
-    table: Table,
-    calendar: FCCalendar,
-    form: UniformsForm,
+    TextFormat: Text,
+    MarkdownFormat: MarkedMarkdown,
+    ImageFormat: Image,
+    LocationFormat: OpenLayersMap,
+    TableFormat: Table,
+    CalendarFormat: FCCalendar,
+    FormFormat: UniformsForm,
+    PromptsFormat: Prompts,
   }
 
   const conversationId = '1'
@@ -52,16 +50,17 @@ describe('MessageArchive Component', () => {
       ...humanMessageData,
       id: getUUID(),
       timestamp: '2024-01-02T00:00:00.000Z',
-      format: 'streamingMarkdown',
+      format: 'updateMarkdownFormat',
       data: {
         text: 'message 1',
+        updateId: 'someMarkdown',
       },
     },
     {
       ...agentMessageData,
       id: getUUID(),
       timestamp: '2024-01-02T00:01:00.000Z',
-      format: 'text',
+      format: 'TextFormat',
       data: {
         text: 'message 2',
       },
@@ -70,7 +69,7 @@ describe('MessageArchive Component', () => {
       ...humanMessageData,
       id: getUUID(),
       timestamp: '2024-01-02T00:12:00.000Z',
-      format: 'text',
+      format: 'TextFormat',
       data: {
         text: 'message 3',
       },

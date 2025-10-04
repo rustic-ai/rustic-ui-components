@@ -5,13 +5,12 @@ import {
   supportedViewports,
   testUser,
 } from '../../../cypress/support/variables'
-import { StreamingText } from '..'
 import Text from '../text/text'
+import { UpdateType } from '../types'
 import ElementRenderer from './elementRenderer'
 
 const supportedElements = {
-  text: Text,
-  streamingText: StreamingText,
+  TextFormat: Text,
 }
 
 const sampleMessage = {
@@ -43,7 +42,7 @@ describe('ElementRenderer', () => {
             {
               ...sampleMessage,
               data: { text: 'Test Text' },
-              format: 'text',
+              format: 'TextFormat',
             },
           ]}
           {...commonProps}
@@ -60,14 +59,19 @@ describe('ElementRenderer', () => {
         reconnect: cy.stub(),
       }
 
+      const updateFields = {
+        updateId: 'someRandomId',
+        updateType: UpdateType.Append,
+      }
+
       cy.viewport(viewport)
       cy.mount(
         <ElementRenderer
           messages={[
             {
               ...sampleMessage,
-              data: { text: 'This' },
-              format: 'streamingText',
+              data: { text: 'This', updateId: updateFields.updateId },
+              format: 'updateTextFormat',
             },
             {
               id: getUUID(),
@@ -76,8 +80,8 @@ describe('ElementRenderer', () => {
               conversationId: 'lkd9vc',
               topic: 'default',
               threadId: '1',
-              data: { text: ' is' },
-              format: 'streamingText',
+              data: { text: ' is', ...updateFields },
+              format: 'updateTextFormat',
             },
             {
               id: getUUID(),
@@ -86,8 +90,8 @@ describe('ElementRenderer', () => {
               conversationId: 'lkd9vc',
               topic: 'default',
               threadId: '1',
-              data: { text: ' streaming' },
-              format: 'streamingText',
+              data: { text: ' streaming', ...updateFields },
+              format: 'updateTextFormat',
             },
             {
               id: getUUID(),
@@ -96,8 +100,8 @@ describe('ElementRenderer', () => {
               conversationId: 'lkd9vc',
               topic: 'default',
               threadId: '1',
-              data: { text: ' text.' },
-              format: 'streamingText',
+              data: { text: ' text.', ...updateFields },
+              format: 'updateTextFormat',
             },
           ]}
           {...commonProps}

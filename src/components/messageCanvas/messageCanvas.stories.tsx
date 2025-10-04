@@ -25,10 +25,16 @@ const mockWsClient = {
   reconnect: () => {},
 }
 
+const supportedElements = {
+  TextFormat: Text,
+  MarkdownFormat: MarkedMarkdown,
+}
+
 const commonElementRendererProps = {
   ws: mockWsClient,
   sender: { name: 'You', id: '16usbj' },
   conversationId: '1',
+  supportedElements: supportedElements,
 }
 
 const baseMessage = {
@@ -36,7 +42,7 @@ const baseMessage = {
   timestamp: '2020-01-02T00:00:00.000Z',
   conversationId: 'lkd9vc',
   topic: 'default',
-  format: 'text',
+  format: 'TextFormat',
   data: {
     text: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
   },
@@ -47,7 +53,7 @@ const markdownMessage = {
   timestamp: '2020-01-02T00:00:00.000Z',
   conversationId: 'lkd9vc',
   topic: 'default',
-  format: 'markdown',
+  format: 'MarkdownFormat',
   sender: { name: 'Scheduling agent', id: 'bh1hbjkidjn' },
   data: {
     title: 'The Rise of AI in Content Creation: Friend or Foe?',
@@ -110,7 +116,7 @@ const messageString = JSON.stringify({
 
 const elementRendererString = `<ElementRenderer
       message={messageFromAgent}
-      supportedElements={{ text: Text }}
+      supportedElements={supportedElements}
     />`
 
 const profileString = `(message: Message) => {
@@ -152,7 +158,6 @@ export const WithProfileIcon = {
     children: (
       <ElementRenderer
         messages={[messageFromHuman]}
-        supportedElements={{ text: Text }}
         {...commonElementRendererProps}
       />
     ),
@@ -178,7 +183,6 @@ export const NoIcon = {
     children: (
       <ElementRenderer
         messages={[messageFromAgent]}
-        supportedElements={{ text: Text }}
         {...commonElementRendererProps}
       />
     ),
@@ -204,14 +208,13 @@ export const WithCopyIcon = {
     children: (
       <ElementRenderer
         messages={[messageFromHuman]}
-        supportedElements={{ text: Text }}
         {...commonElementRendererProps}
       />
     ),
     message: messageFromHuman,
     getProfileComponent: getProfileIconAndName,
     getActionsComponent: (message: Message) => {
-      const copyButton = message.format === 'text' && (
+      const copyButton = message.format === 'TextFormat' && (
         <CopyText message={message} />
       )
       if (copyButton) {
@@ -225,7 +228,7 @@ export const WithCopyIcon = {
         code: `<MessageCanvas
   getProfileComponent={${profileString}}
   getActionsComponent={(message: Message) => {
-    const copyButton = message.format === 'text' && <CopyText message={message} />
+    const copyButton = message.format === 'TextFormat' && <CopyText message={message} />
     if (copyButton) {
       return <>{copyButton}</>
     }
@@ -244,7 +247,6 @@ export const WithTextToSpeech = {
     children: (
       <ElementRenderer
         messages={[markdownMessage]}
-        supportedElements={{ markdown: MarkedMarkdown }}
         {...commonElementRendererProps}
       />
     ),
@@ -267,12 +269,7 @@ export const WithTextToSpeech = {
       source: {
         code: `<MessageCanvas
   getProfileComponent={${profileString}}
-  getActionsComponent={(message: Message) => {
-    const copyButton = message.format === 'text' && <CopyText message={message} />
-    if (copyButton) {
-      return <>{copyButton}</>
-    }
-  }}
+  getActionsComponent={getActionsComponent}
   message={${JSON.stringify(markdownMessage)}}
   >
     ${elementRendererString}

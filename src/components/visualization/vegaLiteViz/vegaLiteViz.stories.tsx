@@ -2,6 +2,7 @@
 import type { Meta, StoryFn } from '@storybook/react-webpack5'
 import React, { useEffect, useRef, useState } from 'react'
 
+import { UpdateType } from '../../types'
 import VegaLiteViz from './vegaLiteViz'
 const meta: Meta<React.ComponentProps<typeof VegaLiteViz>> = {
   title: 'Rustic UI/Visualization/VegaLiteViz',
@@ -704,6 +705,7 @@ export const StreamingLineChart: StoryFn = () => {
             theme: {
               dark: 'dark' as const,
             },
+            updateType: UpdateType.Append,
           },
         ]
       : undefined

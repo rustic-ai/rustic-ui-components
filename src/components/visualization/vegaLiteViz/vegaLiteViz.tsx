@@ -13,10 +13,13 @@ import { default as VegaEmbed } from 'vega-embed'
 
 import MarkedMarkdown from '../../markdown/markedMarkdown'
 import PopoverMenu, { type PopoverMenuItem } from '../../menu/popoverMenu'
+import { UpdateType } from '../../types'
 import type { VegaLiteProps } from './vegaLiteViz.types'
 
 const defaultSourceName = 'source_0'
-/** The `VegaLiteViz` component is a versatile tool for visualizing data using the Vega-Lite grammar. With support for various graphic types, it empowers users to create engaging and informative data visualizations effortlessly.
+
+/** The `VegaLiteViz` component is a versatile tool for visualizing data using the Vega-Lite grammar.
+ * With support for various graphic types, it empowers users to create engaging and informative data visualizations effortlessly.
  *
  * Note: `vega-embed` is not bundled, so please install the following package using npm:
  *
@@ -84,13 +87,23 @@ function VegaLiteViz({
   }
 
   function extractDataFromUpdates(updateData: VegaLiteProps['updatedData']) {
-    const allData: Record<string, unknown>[] = []
+    let allData: Record<string, unknown>[] = []
+    if (props.spec?.data && 'values' in props.spec.data) {
+      const initialDataPoints = props.spec.data.values
+      if (Array.isArray(initialDataPoints)) {
+        allData = [...initialDataPoints]
+      }
+    }
 
     updateData?.forEach((format) => {
       if (format.spec?.data && 'values' in format.spec.data) {
         const values = format.spec.data.values
         if (Array.isArray(values)) {
-          allData.push(...values)
+          if (format.updateType === UpdateType.Append) {
+            allData.push(...values)
+          } else if (format.updateType === UpdateType.Replace) {
+            allData = [...values]
+          }
         }
       }
     })
