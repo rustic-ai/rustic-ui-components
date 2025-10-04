@@ -23,8 +23,10 @@ export interface MessageSpaceProps extends MessageContainerProps {
   receivedMessages?: Message[]
   /** Text label for scroll down button. Default value is 'scroll down'. */
   scrollDownLabel?: string
-  /** If true, disables all scrolling functionalities including auto-scroll and scroll down button */
+  /** If true, disables auto-scroll functionality */
   disableAutoScroll?: boolean
+  /** If true, disables the scroll down button */
+  disableScrollButton?: boolean
 }
 
 function usePrevious(value: number) {
@@ -46,6 +48,7 @@ function usePrevious(value: number) {
 export default function MessageSpace({
   scrollDownLabel = 'Scroll down',
   disableAutoScroll = false,
+  disableScrollButton = false,
   ...props
 }: MessageSpaceProps) {
   const scrollEndRef = useRef<HTMLDivElement>(null)
@@ -54,7 +57,8 @@ export default function MessageSpace({
 
   //set default value as true to avoid showing scroll down button when there's no message in the message space
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true)
-  const [isScrollButtonHidden, setIsScrollButtonHidden] = useState(true)
+  const [isScrollButtonHidden, setIsScrollButtonHidden] =
+    useState(!disableAutoScroll)
   const [areVideosLoaded, setAreVideosLoaded] = useState(false)
   const [chatMessages, setChatMessages] = useState<{
     [messageId: string]: Message[]
@@ -99,20 +103,18 @@ export default function MessageSpace({
   useEffect(() => {
     const container = containerRef.current
 
-    if (!disableAutoScroll) {
+    if (container && (!disableScrollButton || !disableAutoScroll)) {
       checkIntersection()
 
-      if (container) {
-        container.addEventListener('scroll', checkIntersection)
-        window.addEventListener('resize', checkIntersection)
+      container.addEventListener('scroll', checkIntersection)
+      window.addEventListener('resize', checkIntersection)
 
-        return () => {
-          container.removeEventListener('scroll', checkIntersection)
-          window.removeEventListener('resize', checkIntersection)
-        }
+      return () => {
+        container.removeEventListener('scroll', checkIntersection)
+        window.removeEventListener('resize', checkIntersection)
       }
     }
-  }, [isScrolledToBottom, disableAutoScroll])
+  }, [disableScrollButton, isScrolledToBottom])
 
   function scrollDown() {
     if (getVideoStatus()) {
@@ -243,21 +245,23 @@ export default function MessageSpace({
             }
           }
         })}
-        {!isScrolledToBottom && !isScrollButtonHidden && !disableAutoScroll && (
-          <Chip
-            data-cy="scroll-down-button"
-            color="secondary"
-            className="rustic-scroll-down-button"
-            size="medium"
-            onClick={scrollDown}
-            label={
-              <>
-                {scrollDownLabel}
-                <Icon name="arrow_downward" />
-              </>
-            }
-          />
-        )}
+        {!isScrolledToBottom &&
+          !isScrollButtonHidden &&
+          !disableScrollButton && (
+            <Chip
+              data-cy="scroll-down-button"
+              color="secondary"
+              className="rustic-scroll-down-button"
+              size="medium"
+              onClick={scrollDown}
+              label={
+                <>
+                  {scrollDownLabel}
+                  <Icon name="arrow_downward" />
+                </>
+              }
+            />
+          )}
       </Box>
       {renderBottomPrompts(chatMessages)}
     </Box>

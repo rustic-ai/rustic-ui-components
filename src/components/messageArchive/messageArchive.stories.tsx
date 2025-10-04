@@ -448,10 +448,11 @@ export const Default = {
   },
 }
 
-export const WithDisabledAutoScroll = {
+export const WithDisabledScroll = {
   args: {
     ...Default.args,
     disableAutoScroll: true,
+    disableScrollButton: true,
     infoMessage: '',
   },
 }
