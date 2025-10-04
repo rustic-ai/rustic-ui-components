@@ -13,8 +13,12 @@ export interface ElementRendererProps {
 const ElementRenderer = (props: ElementRendererProps) => {
   const rootMessage = props.messages[0]
   const updateMessages = props.messages.slice(1)
+  let msgFormat = rootMessage.format
+  if (msgFormat.startsWith('update')) {
+    msgFormat = msgFormat.replace('update', '')
+  }
 
-  const MaybeElement = props.supportedElements[rootMessage.format]
+  const MaybeElement = props.supportedElements[msgFormat]
   return (
     <>
       {MaybeElement ? (
@@ -30,7 +34,7 @@ const ElementRenderer = (props: ElementRendererProps) => {
         })
       ) : (
         <Typography variant="body2">
-          Unsupported element format: {rootMessage.format}
+          Unsupported element format: {msgFormat}
         </Typography>
       )}
     </>

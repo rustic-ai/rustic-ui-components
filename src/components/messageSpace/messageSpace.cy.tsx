@@ -12,11 +12,9 @@ import {
   FCCalendar,
   Image,
   MarkedMarkdown,
-  MarkedStreamingMarkdown,
   type Message,
   OpenLayersMap,
   Prompts,
-  StreamingText,
   Table,
   Text,
   UniformsForm,
@@ -29,16 +27,14 @@ describe('MessageSpace Component', () => {
   const messageCanvas = '[data-cy=message-canvas]'
 
   const supportedElements = {
-    text: Text,
-    streamingText: StreamingText,
-    markdown: MarkedMarkdown,
-    streamingMarkdown: MarkedStreamingMarkdown,
-    image: Image,
-    map: OpenLayersMap,
-    table: Table,
-    calendar: FCCalendar,
-    form: UniformsForm,
-    prompts: Prompts,
+    TextFormat: Text,
+    MarkdownFormat: MarkedMarkdown,
+    ImageFormat: Image,
+    LocationFormat: OpenLayersMap,
+    TableFormat: Table,
+    CalendarFormat: FCCalendar,
+    FormFormat: UniformsForm,
+    PromptsFormat: Prompts,
   }
 
   const conversationId = '1'
@@ -58,16 +54,17 @@ describe('MessageSpace Component', () => {
       ...humanMessageData,
       id: getUUID(),
       timestamp: '2024-01-02T00:00:00.000Z',
-      format: 'streamingMarkdown',
+      format: 'updateMarkdownFormat',
       data: {
         text: 'message 1',
+        updateId: 'someMarkdown',
       },
     },
     {
       ...agentMessageData,
       id: getUUID(),
       timestamp: '2024-01-02T00:01:00.000Z',
-      format: 'text',
+      format: 'TextFormat',
       data: {
         text: 'message 2',
       },
@@ -76,7 +73,7 @@ describe('MessageSpace Component', () => {
       ...humanMessageData,
       id: getUUID(),
       timestamp: '2024-01-02T00:12:00.000Z',
-      format: 'text',
+      format: 'TextFormat',
       data: {
         text: 'message 3',
       },
@@ -87,54 +84,56 @@ describe('MessageSpace Component', () => {
   const messageContainer = '[data-cy=message-container]'
 
   const webSocketUrl = 'ws://localhost:8082'
-  const streamingTextRootMessageId = getUUID()
+  const updateIdentifier = getUUID()
   const messagesToBeSent = [
     {
       ...humanMessageData,
       id: getUUID(),
       timestamp: new Date().toISOString(),
-      format: 'text',
+      format: 'TextFormat',
       data: {
         text: 'Could you show me an example of the streaming text component?',
       },
     },
     {
       ...agentMessageData,
-      id: streamingTextRootMessageId,
+      id: getUUID(),
       timestamp: new Date().toISOString(),
-      format: 'streamingText',
+      format: 'updateTextFormat',
       data: {
         text: 'Sure!',
+        updateId: updateIdentifier,
       },
     },
     {
       ...agentMessageData,
       id: getUUID(),
-      threadId: streamingTextRootMessageId,
       timestamp: new Date().toISOString(),
-      format: 'updateStreamingText',
+      format: 'updateTextFormat',
       data: {
         text: ' The text',
+        updateId: updateIdentifier,
       },
     },
     {
       ...agentMessageData,
-      id: streamingTextRootMessageId,
-      threadId: streamingTextRootMessageId,
+      id: updateIdentifier,
+      threadId: updateIdentifier,
       timestamp: new Date().toISOString(),
-      format: 'updateStreamingText',
+      format: 'updateTextFormat',
       data: {
         text: ' is displayed',
+        updateId: updateIdentifier,
       },
     },
     {
       ...agentMessageData,
-      id: streamingTextRootMessageId,
-      threadId: streamingTextRootMessageId,
+      id: updateIdentifier,
       timestamp: new Date().toISOString(),
-      format: 'updateStreamingText',
+      format: 'updateTextFormat',
       data: {
         text: ' progressively.',
+        updateId: updateIdentifier,
       },
     },
   ]
@@ -218,7 +217,7 @@ describe('MessageSpace Component', () => {
               ...humanMessageData,
               id: getUUID(),
               timestamp: '2024-01-02T00:00:00.000Z',
-              format: 'text',
+              format: 'TextFormat',
               data: {
                 text: 'Existing message',
               },
@@ -306,7 +305,7 @@ describe('MessageSpace Component', () => {
               ...agentMessageData,
               id: 'formId',
               timestamp: '2024-01-02T00:01:00.000Z',
-              format: 'form',
+              format: 'FormFormat',
               data: {
                 title: 'Choose the days',
                 schema: {
@@ -374,7 +373,7 @@ describe('MessageSpace Component', () => {
               ...messages,
               {
                 id: getUUID(),
-                format: 'prompts',
+                format: 'PromptsFormat',
                 conversationId: conversationId,
                 timestamp: new Date().toISOString(),
                 data: {
@@ -385,7 +384,7 @@ describe('MessageSpace Component', () => {
               },
               {
                 id: getUUID(),
-                format: 'prompts',
+                format: 'PromptsFormat',
                 conversationId: conversationId,
                 timestamp: new Date().toISOString(),
                 data: {
@@ -419,7 +418,7 @@ describe('MessageSpace Component', () => {
               ...messages,
               {
                 id: getUUID(),
-                format: 'prompts',
+                format: 'PromptsFormat',
                 conversationId: conversationId,
                 timestamp: new Date().toISOString(),
                 data: {
@@ -429,7 +428,7 @@ describe('MessageSpace Component', () => {
               },
               {
                 id: getUUID(),
-                format: 'prompts',
+                format: 'PromptsFormat',
                 conversationId: conversationId,
                 timestamp: new Date().toISOString(),
                 data: {

@@ -34,6 +34,11 @@ export enum MessageProcessStatus {
   Error = 'error',
 }
 
+export enum UpdateType {
+  Append = 'append',
+  Replace = 'replace',
+}
+
 export interface Message {
   id: string
   timestamp: string
@@ -67,6 +72,10 @@ export interface DataFormat {
   title?: string
   /** Optional description. */
   description?: string
+  /** Optional updateId */
+  updateId?: string
+  /** Optional updateType */
+  updateType?: UpdateType
 }
 
 export interface Updates<T extends DataFormat> {
