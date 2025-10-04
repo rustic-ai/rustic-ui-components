@@ -32,11 +32,25 @@ export interface MessageArchiveProps extends MessageContainerProps {
 }
 
 /**
- The `MessageArchive` component uses `MessageCanvas` and `ElementRenderer` to render a list of messages. It serves as a container for individual message items, each encapsulated within a `MessageCanvas` for consistent styling and layout. Unlike the `MessageSpace` component, it does not support message sending functionality. Instead, it is designed to display archived messages in a read-only format. Do not include any components that require a WebSocket connection, such as `Prompts`, in the `supportedElements`.
+ The `MessageArchive` component uses `MessageCanvas` and `ElementRenderer` to render a list of messages. It serves as a
+ container for individual message items, each encapsulated within a `MessageCanvas` for consistent styling and layout.
+ Unlike the `MessageSpace` component, it does not support message sending functionality. Instead, it is designed to
+ display archived messages in a read-only format.
+ Do not include any components that require a WebSocket connection, such as `Prompts`, in the `supportedElements`.
 
- The `MessageArchive` component can combine update messages with the original message and render them as a single message. For this to work, the `threadId` of the update message must match the `id` of the original message, and the format of the update message should be prefixed with 'update'. For example, if the original message format is 'streamingText', the update message format should be 'updateStreamingText'.
- 
- Note: For more information about the `getActionsComponent` and `getProfileComponent` fields, refer to the [MessageCanvas' docs](https://rustic-ai.github.io/rustic-ui-components/?path=/docs/rustic-ui-message-canvas-message-canvas--docs).
+ The `MessageArchive` component can combine update messages with the original message and render them as a single message.
+ For this to work, the `updateId` of the update message must match the `updateId` of the original message, and the
+ format of such messages should be prefixed with `update`.
+ The messages other than the first, which have the updated data must also specify the `updateType` - append or replace.
+
+ For example, if the format for plain text messages is configured as `TextFormat` in supportedElements, then for
+ streaming text messages, the format to set would be `updateTextFormat`.
+
+ Not all components support updates. Currently, only Text, MarkedMarkdown and VegaLiteViz support it.
+ We are working to add support for others and welcome contributions.
+
+ Note: For more information about the `getActionsComponent` and `getProfileComponent` fields, refer to the
+ [MessageCanvas' docs](https://rustic-ai.github.io/rustic-ui-components/?path=/docs/rustic-ui-message-canvas-message-canvas--docs).
 */
 
 export default function MessageArchive({

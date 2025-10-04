@@ -42,13 +42,13 @@ Follow these steps to quickly integrate Rustic UI Components into your applicati
    import CodeSnippet from "@rustic-ai/ui-components/codeSnippet"
    import Image from "@rustic-ai/ui-components/image"
    import OpenLayersMap from "@rustic-ai/ui-components/map"
-   import MarkedMarkdown, { MarkedStreamingMarkdown } from "@rustic-ai/ui-components/markdown"
+   import MarkedMarkdown from "@rustic-ai/ui-components/markdown"
    import Sound from "@rustic-ai/ui-components/media/audio"
    import Video from "@rustic-ai/ui-components/media/video"
    import MessageSpace from "@rustic-ai/ui-components/messageSpace"
    import Question from "@rustic-ai/ui-components/question"
    import Table from "@rustic-ai/ui-components/table"
-   import { StreamingText, Text } from "@rustic-ai/ui-components/text"
+   import { Text } from "@rustic-ai/ui-components/text"
 
    export default function YourApp() {
        // Sample data for messages. Please make sure your message data uses props we defined for each message format.
@@ -81,9 +81,7 @@ Follow these steps to quickly integrate Rustic UI Components into your applicati
                    ws={ws}
                    supportedElements={{
                    text: Text,
-                   streamingText: StreamingText,
                    markdown: MarkedMarkdown,
-                   streamingMarkdown: MarkedStreamingMarkdown,
                    image: Image,
                    map: OpenLayersMap,
                    table: Table,

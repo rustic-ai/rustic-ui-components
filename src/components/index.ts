@@ -9,7 +9,6 @@ import Uploader from './input/multimodal/uploader/uploader'
 import TextInput from './input/textInput/textInput'
 import OpenLayersMap from './map/openLayersMap'
 import MarkedMarkdown from './markdown/markedMarkdown'
-import MarkedStreamingMarkdown from './markdown/markedStreamingMarkdown'
 import Sound from './media/audio/sound'
 import Video from './media/video/video'
 import PopoverMenu from './menu/popoverMenu'
@@ -27,7 +26,6 @@ import PromptBuilder from './promptBuilder/promptBuilder'
 import Prompts from './prompts/prompts'
 import Question from './question/question'
 import Table from './table/table'
-import StreamingText from './text/streamingText'
 import Text from './text/text'
 import Timestamp from './timestamp/timestamp'
 import MermaidViz from './visualization/mermaidViz/mermaidViz'
@@ -46,7 +44,6 @@ export {
   Icon,
   Image,
   MarkedMarkdown,
-  MarkedStreamingMarkdown,
   MermaidViz,
   MessageArchive,
   MessageCanvas,
@@ -63,7 +60,6 @@ export {
   Prompts,
   Question,
   Sound,
-  StreamingText,
   Table,
   Text,
   TextInput,
