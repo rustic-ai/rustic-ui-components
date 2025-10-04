@@ -25,6 +25,10 @@ export interface MessageArchiveProps extends MessageContainerProps {
   infoMessage?: string
   /** Loading icon to display while fetching historic messages. If not provided, a default spinner will be shown */
   loadingIcon?: ReactNode
+  /** If true, disables auto-scroll functionality */
+  disableAutoScroll?: boolean
+  /** If true, disables the scroll down button */
+  disableScrollButton?: boolean
 }
 
 /**
@@ -37,6 +41,8 @@ export interface MessageArchiveProps extends MessageContainerProps {
 
 export default function MessageArchive({
   scrollDownLabel = 'Scroll down',
+  disableAutoScroll = false,
+  disableScrollButton = false,
   ...props
 }: MessageArchiveProps) {
   const scrollEndRef = useRef<HTMLDivElement>(null)
@@ -44,7 +50,8 @@ export default function MessageArchive({
   const timeoutRef = useRef<NodeJS.Timeout>()
 
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true)
-  const [isScrollButtonHidden, setIsScrollButtonHidden] = useState(true)
+  const [isScrollButtonHidden, setIsScrollButtonHidden] =
+    useState(!disableAutoScroll)
   const [areVideosLoaded, setAreVideosLoaded] = useState(false)
   const [chatMessages, setChatMessages] = useState<{
     [messageId: string]: Message[]
@@ -125,13 +132,15 @@ export default function MessageArchive({
   }, [props.getHistoricMessages])
 
   useEffect(() => {
-    if (!isLoading && chatMessages) {
+    if (!isLoading && chatMessages && !disableAutoScroll) {
       scrollDown()
     }
+  }, [isLoading, chatMessages, disableAutoScroll])
 
+  useEffect(() => {
     const container = containerRef.current
 
-    if (container) {
+    if (container && (!disableScrollButton || !disableAutoScroll)) {
       checkIntersection()
 
       container.addEventListener('scroll', checkIntersection)
@@ -142,11 +151,13 @@ export default function MessageArchive({
         window.removeEventListener('resize', checkIntersection)
       }
     }
-  }, [isLoading, chatMessages])
+  }, [disableScrollButton, chatMessages])
 
   useEffect(() => {
-    scrollDown()
-  }, [areVideosLoaded])
+    if (!disableAutoScroll) {
+      scrollDown()
+    }
+  }, [areVideosLoaded, disableAutoScroll])
 
   if (isLoading) {
     return (
@@ -191,21 +202,23 @@ export default function MessageArchive({
               </MessageCanvas>
             )
           })}
-          {!isScrolledToBottom && !isScrollButtonHidden && (
-            <Chip
-              data-cy="scroll-down-button"
-              color="secondary"
-              className="rustic-scroll-down-button"
-              size="medium"
-              onClick={scrollDown}
-              label={
-                <>
-                  {scrollDownLabel}
-                  <Icon name="arrow_downward" />
-                </>
-              }
-            />
-          )}
+          {!isScrolledToBottom &&
+            !isScrollButtonHidden &&
+            !disableScrollButton && (
+              <Chip
+                data-cy="scroll-down-button"
+                color="secondary"
+                className="rustic-scroll-down-button"
+                size="medium"
+                onClick={scrollDown}
+                label={
+                  <>
+                    {scrollDownLabel}
+                    <Icon name="arrow_downward" />
+                  </>
+                }
+              />
+            )}
         </Box>
       </Box>
     )
