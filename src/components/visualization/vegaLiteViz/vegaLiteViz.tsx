@@ -88,20 +88,14 @@ function VegaLiteViz({
 
   function extractDataFromUpdates(updateData: VegaLiteProps['updatedData']) {
     let allData: Record<string, unknown>[] = []
-
+    let isOldDataRemoved = false
     if (updateData) {
-      if (props.spec?.data && 'values' in props.spec.data) {
-        const initialDataPoints = props.spec.data.values
-        if (Array.isArray(initialDataPoints)) {
-          allData = [...initialDataPoints]
-        }
-      }
-
       const lastUpdate = updateData.at(-1)
       if (lastUpdate?.updateType === UpdateType.Replace) {
         if (lastUpdate.spec?.data && 'values' in lastUpdate.spec.data) {
           const values = lastUpdate.spec.data.values
           if (Array.isArray(values)) {
+            isOldDataRemoved = true
             allData = [...values]
           }
         }
@@ -113,6 +107,7 @@ function VegaLiteViz({
               if (format.updateType === UpdateType.Append) {
                 allData.push(...values)
               } else if (format.updateType === UpdateType.Replace) {
+                isOldDataRemoved = true
                 allData = [...values]
               }
             }
@@ -120,7 +115,10 @@ function VegaLiteViz({
         })
       }
     }
-    return allData
+    return vega
+      .changeset()
+      .remove(() => isOldDataRemoved)
+      .insert(allData)
   }
 
   const tooltipStyle = {
@@ -236,20 +234,14 @@ function VegaLiteViz({
         props.updatedData.length > 0 &&
         viewRef.current
       ) {
-        const newData = extractDataFromUpdates(props.updatedData)
-        if (newData.length > 0) {
-          try {
-            const changeSet = vega
-              .changeset()
-              .remove(() => true)
-              .insert(newData)
-            viewRef.current.change(defaultSourceName, changeSet).run()
-          } catch (error) {
-            console.error('Failed to update streaming data:', error)
-          }
+        try {
+          const changeSet = extractDataFromUpdates(props.updatedData)
+          viewRef.current.change(defaultSourceName, changeSet).run()
+        } catch (error) {
+          console.error('Failed to update streaming data:', error)
         }
       }
-    }, 0) // Small delay to ensure chart is ready
+    }, 1) // Small delay to ensure chart is ready
 
     return () => clearTimeout(timeoutId)
   }, [props.updatedData])
