@@ -670,66 +670,6 @@ const streamingSpec = {
   },
 }
 
-export const StreamingLineChart: StoryFn = () => {
-  const [newPoints, setNewPoints] = useState<
-    Array<{ x: number; y: number; category: string }>
-  >([])
-  const counterRef = useRef(0)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      counterRef.current += 1
-      const newPoint = {
-        x: counterRef.current,
-        y: Math.sin(counterRef.current * 0.1) * 50 + Math.random() * 20,
-        category: 'stream',
-      }
-
-      // Only send the new single point
-      setNewPoints([newPoint])
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [])
-
-  const updatedData =
-    newPoints.length > 0
-      ? [
-          {
-            spec: {
-              ...streamingSpec,
-              data: {
-                values: newPoints,
-              },
-            },
-            theme: {
-              dark: 'dark' as const,
-            },
-            updateType: UpdateType.Append,
-          },
-        ]
-      : undefined
-
-  return (
-    <div
-      style={{
-        width: 'clamp(250px, 70vw, 1000px)',
-        height: 'clamp(150px, 40vh, 400px)',
-      }}
-    >
-      <VegaLiteViz
-        spec={streamingSpec}
-        updatedData={updatedData}
-        theme={{
-          dark: 'dark',
-        }}
-        title="Streaming Line Chart"
-        description="This chart demonstrates real-time data streaming with new points added every second."
-      />
-    </div>
-  )
-}
-
 export const IsotypeGrid = {
   args: {
     title: 'Isotype Grid',
@@ -864,4 +804,124 @@ export const IsotypeGrid = {
     },
   },
   decorators,
+}
+
+export const StreamingLineChartWithAppend: StoryFn = () => {
+  const [newPoints, setNewPoints] = useState<
+    Array<{ x: number; y: number; category: string }>
+  >([])
+  const counterRef = useRef(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      counterRef.current += 1
+      const newPoint = {
+        x: counterRef.current,
+        y: Math.sin(counterRef.current * 0.1) * 50 + Math.random() * 20,
+        category: 'stream',
+      }
+
+      // Only send the new single point
+      setNewPoints([newPoint])
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  const updatedData =
+    newPoints.length > 0
+      ? [
+          {
+            spec: {
+              ...streamingSpec,
+              data: {
+                values: newPoints,
+              },
+            },
+            theme: {
+              dark: 'dark' as const,
+            },
+            updateType: UpdateType.Append,
+          },
+        ]
+      : undefined
+
+  return (
+    <div
+      style={{
+        width: 'clamp(250px, 70vw, 1000px)',
+        height: 'clamp(150px, 40vh, 400px)',
+      }}
+    >
+      <VegaLiteViz
+        spec={streamingSpec}
+        updatedData={updatedData}
+        theme={{
+          dark: 'dark',
+        }}
+        title="Streaming Line Chart"
+        description="This chart demonstrates real-time data streaming with new points added every second."
+      />
+    </div>
+  )
+}
+
+export const StreamingLineChartWithReplace: StoryFn = () => {
+  const [newPoints, setNewPoints] = useState<
+    Array<{ x: number; y: number; category: string }>
+  >([])
+  const counterRef = useRef(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      counterRef.current += 1
+      const newPoint = {
+        x: counterRef.current,
+        y: Math.sin(counterRef.current * 0.1) * 50 + Math.random() * 20,
+        category: 'stream',
+      }
+
+      // Only send the new single point
+      setNewPoints([newPoint])
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  const updatedData =
+    newPoints.length > 0
+      ? [
+          {
+            spec: {
+              ...streamingSpec,
+              data: {
+                values: newPoints,
+              },
+            },
+            theme: {
+              dark: 'dark' as const,
+            },
+            updateType: UpdateType.Replace,
+          },
+        ]
+      : undefined
+
+  return (
+    <div
+      style={{
+        width: 'clamp(250px, 70vw, 1000px)',
+        height: 'clamp(150px, 40vh, 400px)',
+      }}
+    >
+      <VegaLiteViz
+        spec={streamingSpec}
+        updatedData={updatedData}
+        theme={{
+          dark: 'dark',
+        }}
+        title="Streaming Line Chart"
+        description="This chart demonstrates real-time data streaming with new points replace old ones every second."
+      />
+    </div>
+  )
 }

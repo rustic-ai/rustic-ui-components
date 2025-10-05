@@ -239,7 +239,10 @@ function VegaLiteViz({
         const newData = extractDataFromUpdates(props.updatedData)
         if (newData.length > 0) {
           try {
-            const changeSet = vega.changeset().insert(newData)
+            const changeSet = vega
+              .changeset()
+              .remove(() => true)
+              .insert(newData)
             viewRef.current.change(defaultSourceName, changeSet).run()
           } catch (error) {
             console.error('Failed to update streaming data:', error)
