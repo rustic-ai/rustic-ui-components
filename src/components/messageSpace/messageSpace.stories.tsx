@@ -78,11 +78,13 @@ meta.argTypes = {
           '  format: A string representing the format of the message.\n' +
           '  data: An object of type MessageData, which can contain any key-value pairs.\n' +
           '  inReplyTo: An optional string representing the identifier of the message to which this message is a reply.\n' +
-          '  threadId: An optional string representing the identifier of the thread to which this message belongs.\n' +
+          '  threads: An optional array of strings tracking the message IDs in the thread history.\n' +
           '  priority: An optional string representing the priority of the message.\n' +
-          '  taggedParticipants: An optional array of strings representing the participants tagged in the message.\n' +
+          '  recipientList: An optional array of objects representing the recipients tagged in the message.\n' +
+          "                 Each object should include the recipient's id and name.\n" +
           '  topic: An optional string representing the identifier of the topic associated with the message.\n' +
           '  messageHistory: An optional array of objects representing the message history.\n' +
+          '  topic: An optional string representing the identifier of the topic associated with the message.\n' +
           '  processStatus: An optional string representing the process status of the message. \n' +
           '                 Possible values include "running", "completed", "error"\n',
       },

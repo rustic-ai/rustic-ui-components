@@ -22,7 +22,6 @@ import ChatCompletion from './multipart/chatCompletion/chatCompletion'
 import Multipart from './multipart/multipart/multipart'
 import ParticipantsContainer from './participantsContainer/participantsContainer'
 import PDFViewer from './pdfViewer/pdfViewer'
-import PromptBuilder from './promptBuilder/promptBuilder'
 import Prompts from './prompts/prompts'
 import Question from './question/question'
 import Table from './table/table'
@@ -56,7 +55,6 @@ export {
   PerspectiveViz,
   PlotlyGraph,
   PopoverMenu,
-  PromptBuilder,
   Prompts,
   Question,
   Sound,
