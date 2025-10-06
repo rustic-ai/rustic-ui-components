@@ -1,7 +1,5 @@
 import type React from 'react'
 
-import type { MessageSpaceProps } from './messageSpace/messageSpace'
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MessageData = { [key: string]: any }
 
@@ -47,9 +45,9 @@ export interface Message {
   format: string
   data: MessageData
   inReplyTo?: string
-  threadId?: string
+  threads?: string[]
   priority?: string
-  taggedParticipants?: string[]
+  recipientList?: AgentTag[]
   topic?: string
   messageHistory?: ProcessEntry[]
   processStatus?: MessageProcessStatus
@@ -465,19 +463,6 @@ export type WeatherData = WeatherFormat & Updates<WeatherFormat>
 
 export interface WeatherProps extends WeatherData {
   weatherProvider?: string
-}
-
-export interface PromptBuilderProps
-  extends Omit<
-    MessageSpaceProps,
-    'getActionsComponent' | 'scrollDownLabel' | 'messages'
-  > {
-  /** Message id of the message that invokes the PromptBuilder. It is optional and intended to support the use of threads in your application, should you choose to implement them. All interactions within a PromptBuilder session are considered part of a single thread. In this component, the collected user inputs are submitted as messages to the server, with the `threadId` field of those messages set to this message id. This marks the message invoking the PromptBuilder as the parent message of the thread. Refer to the `MessageSpace` documentation to read more about `Message` interface. */
-  messageId?: string
-  /** Function called when the user clicks on the "Generate" button. At this point, the conversation within the prompt builder will cease. Provide your custom logic to dictate what happens next and where the generated prompt will be displayed. */
-  onSubmit: () => void
-  /** Function called when quitting the prompt builder. A confirmation modal will appear when the user clicks on the "Quit" button. The user will be given an option to quit or continue building the prompt. The function will be called upon confirmation of quitting. */
-  onCancel: () => void
 }
 
 export interface FormFormat extends DataFormat {

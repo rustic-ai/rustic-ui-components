@@ -118,7 +118,6 @@ describe('MessageSpace Component', () => {
     {
       ...agentMessageData,
       id: updateIdentifier,
-      threadId: updateIdentifier,
       timestamp: new Date().toISOString(),
       format: 'updateTextFormat',
       data: {
