@@ -58,6 +58,8 @@ const MarkedMarkdown = (props: TextData) => {
     )
     const parsedText = marked.parse(textWithoutZeroWidthSpaces, {
       async: false,
+      breaks: true,
+      gfm: true,
     })
     const sanitizedText = DOMPurify.sanitize(parsedText)
 
