@@ -298,6 +298,7 @@ function BaseInputElement(
       data: { text: messageText },
       inReplyTo: props.lastMsg?.id,
       messageHistory: props.lastMsg?.messageHistory,
+      ...(props.threads && { threads: props.threads }),
     }
 
     props.send(formattedMessage)

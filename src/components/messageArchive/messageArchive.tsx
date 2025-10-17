@@ -7,7 +7,7 @@ import Box from '@mui/system/Box'
 import React, { type ReactNode, useEffect, useRef, useState } from 'react'
 
 import ElementRenderer from '../elementRenderer/elementRenderer'
-import { getCombinedMessages } from '../helper'
+import { getCombinedMessages, getMessageIdentifier } from '../helper'
 import Icon from '../icon/icon'
 import MessageCanvas, {
   type MessageContainerProps,
@@ -29,6 +29,10 @@ export interface MessageArchiveProps extends MessageContainerProps {
   disableAutoScroll?: boolean
   /** If true, disables the scroll down button */
   disableScrollButton?: boolean
+  /** The ID of the active thread message */
+  activeThreadId?: string
+  /** A record mapping message IDs to their thread messages */
+  threadMessages?: Record<string, Message[]>
 }
 
 /**
@@ -196,10 +200,16 @@ export default function MessageArchive({
           {Object.keys(chatMessages).map((key, index) => {
             const messages = chatMessages[key]
             const latestMessage = messages[messages.length - 1]
+            const firstMessage = messages[0]
             const hasResponse = latestMessage.format.includes('Response')
             const inReplyTo = hasResponse && {
-              inReplyTo: messages[0],
+              inReplyTo: firstMessage,
             }
+
+            const messageIdentifier = getMessageIdentifier(firstMessage)
+            const threadReplies = props.threadMessages?.[messageIdentifier]
+            const threadReplyCount = threadReplies?.length
+
             return (
               <MessageCanvas
                 key={key}
@@ -208,6 +218,11 @@ export default function MessageArchive({
                 getActionsComponent={props.getActionsComponent}
                 getProfileComponent={props.getProfileComponent}
                 ref={index === currentMessagesLength - 1 ? scrollEndRef : null}
+                {...(threadReplies && {
+                  threadReplyCount: threadReplyCount,
+                  onThreadOpen: () => props.onThreadOpen?.(messageIdentifier),
+                  isActiveThread: props.activeThreadId === messageIdentifier,
+                })}
               >
                 <ElementRenderer
                   messages={hasResponse ? [messages[0]] : messages}

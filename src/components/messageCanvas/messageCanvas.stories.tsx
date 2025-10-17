@@ -278,3 +278,40 @@ export const WithTextToSpeech = {
     },
   },
 }
+
+export const WithThreadReplies = {
+  args: {
+    children: (
+      <ElementRenderer
+        messages={[messageFromHuman]}
+        {...commonElementRendererProps}
+      />
+    ),
+    message: messageFromHuman,
+    getProfileComponent: getProfileIconAndName,
+    threadReplyCount: 3,
+    onThreadOpen: (id: string) => {
+      alert('Thread opened for message: ' + id)
+    },
+    getActionsComponent: (message: Message) => {
+      const copyButton = message.format === 'TextFormat' && (
+        <CopyText message={message} />
+      )
+      if (copyButton) {
+        return <>{copyButton}</>
+      }
+    },
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<MessageCanvas
+  getProfileComponent={${profileString}}
+  message={${messageString}}
+  >
+    ${elementRendererString}
+</MessageCanvas>`,
+      },
+    },
+  },
+}

@@ -71,7 +71,11 @@ export {
 }
 
 export * from '../rusticTheme'
-export { formatDateAndTime, getCombinedMessages } from './helper'
+export {
+  formatDateAndTime,
+  getCombinedMessages,
+  getMessageIdentifier,
+} from './helper'
 export type * from './types'
 export { ParticipantRole, ParticipantType } from './types'
 export type * from './visualization/mermaidViz/mermaidViz.types'

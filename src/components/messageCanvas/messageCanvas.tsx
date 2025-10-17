@@ -1,11 +1,14 @@
 import './messageCanvas.css'
 
-import { useTheme } from '@mui/material'
 import Card from '@mui/material/Card'
 import Stack from '@mui/material/Stack'
+import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import Box from '@mui/system/Box'
+import useTheme from '@mui/system/useTheme'
 import React, { forwardRef, type ReactNode } from 'react'
 
+import Icon from '../icon/icon'
 import Timestamp from '../timestamp/timestamp'
 import type { Message } from '../types'
 
@@ -19,6 +22,8 @@ export interface MessageContainerProps {
    * One such example is the `CopyText` component.
    */
   getActionsComponent?: (message: Message) => ReactNode | undefined
+  /** A function that is called when user clicks on the thread replies. Can be used to open a thread view. */
+  onThreadOpen?: (messageId: string) => void
 }
 
 export interface MessageCanvasProps extends MessageContainerProps {
@@ -28,6 +33,10 @@ export interface MessageCanvasProps extends MessageContainerProps {
   inReplyTo?: Message
   /** React component to be displayed in the message canvas. */
   children: ReactNode
+  /** Number of thread replies */
+  threadReplyCount?: number
+  /** Whether this message is the active thread */
+  isActiveThread?: boolean
 }
 
 /**
@@ -40,7 +49,6 @@ function MessageCanvasElement(
   ref: React.Ref<HTMLDivElement>
 ) {
   const theme = useTheme()
-
   const messageInfo = props.inReplyTo ? props.inReplyTo : props.message
 
   return (
@@ -64,12 +72,20 @@ function MessageCanvasElement(
           <Card
             variant="outlined"
             className="rustic-message-actions-container"
-            sx={{ boxShadow: theme.shadows[1] }}
+            sx={{ boxShadow: (theme as Theme).shadows[1] }}
           >
             {props.getActionsComponent(messageInfo)}
           </Card>
         )}
-      <Card variant="outlined" className="rustic-message-container">
+      <Card
+        variant="outlined"
+        className="rustic-message-container"
+        sx={{
+          backgroundColor: props.isActiveThread
+            ? theme.palette.secondary.focus
+            : theme.palette.background.paper,
+        }}
+      >
         {props.children}
         {props.inReplyTo && (
           <Typography
@@ -82,6 +98,30 @@ function MessageCanvasElement(
           </Typography>
         )}
       </Card>
+      {props.threadReplyCount && (
+        <Box
+          className="rustic-thread-reply-count"
+          onClick={() => props.onThreadOpen?.(props.message.id)}
+        >
+          <Icon
+            name="sms"
+            className="rustic-thread-reply-icon"
+            color={theme.palette.secondary.main}
+          />
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{
+              '.rustic-thread-reply-count:hover &': {
+                color: theme.palette.secondary.main,
+              },
+            }}
+          >
+            {props.threadReplyCount}{' '}
+            {props.threadReplyCount === 1 ? 'reply' : 'replies'}
+          </Typography>
+        </Box>
+      )}
     </Stack>
   )
 }

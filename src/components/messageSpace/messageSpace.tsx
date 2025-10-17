@@ -5,7 +5,7 @@ import Box from '@mui/system/Box'
 import React, { useEffect, useRef, useState } from 'react'
 
 import ElementRenderer from '../elementRenderer/elementRenderer'
-import { getCombinedMessages } from '../helper'
+import { getCombinedMessages, getMessageIdentifier } from '../helper'
 import Icon from '../icon/icon'
 import MessageCanvas, {
   type MessageContainerProps,
@@ -27,6 +27,12 @@ export interface MessageSpaceProps extends MessageContainerProps {
   disableAutoScroll?: boolean
   /** If true, disables the scroll down button */
   disableScrollButton?: boolean
+  /** Root messages to be displayed at the top of the message space */
+  rootMessages?: Message[]
+  /** The ID of the active thread message */
+  activeThreadId?: string
+  /** A record mapping message IDs to their thread messages */
+  threadMessages?: Record<string, Message[]>
 }
 
 function usePrevious(value: number) {
@@ -35,6 +41,14 @@ function usePrevious(value: number) {
     ref.current = value
   })
   return ref.current
+}
+
+function getInitialChatMessages(rootMessages?: Message[]) {
+  if (!rootMessages) {
+    return {}
+  }
+  const messageIdentifier = getMessageIdentifier(rootMessages[0])
+  return { [messageIdentifier]: rootMessages }
 }
 
 /**
@@ -162,6 +176,8 @@ export default function MessageSpace({
   }, [isScrolledToBottom, Object.keys(chatMessages).length, disableAutoScroll])
 
   useEffect(() => {
+    setIsScrolledToBottom(true)
+    const rootMessagesDict = getInitialChatMessages(props.rootMessages)
     let messageDict: { [messageId: string]: Message[] } = {}
 
     props.receivedMessages?.forEach((message) => {
@@ -169,8 +185,8 @@ export default function MessageSpace({
       messageDict = newMessageDict
     })
 
-    setChatMessages(messageDict)
-  }, [props.receivedMessages?.length])
+    setChatMessages({ ...rootMessagesDict, ...messageDict })
+  }, [props.receivedMessages?.length, props.rootMessages])
 
   function handleIncomingMessage(message: Message) {
     setChatMessages((prevMessages) =>
@@ -215,11 +231,16 @@ export default function MessageSpace({
         {Object.keys(chatMessages).map((key, index) => {
           const messages = chatMessages[key]
           const latestMessage = messages[messages.length - 1]
+          const firstMessage = messages[0]
           const hasResponse = latestMessage.format.includes('Response')
           const inReplyTo = hasResponse && {
-            inReplyTo: messages[0],
+            inReplyTo: firstMessage,
           }
+
           if (!latestMessage.format.toLowerCase().startsWith('prompts')) {
+            const messageIdentifier = getMessageIdentifier(firstMessage)
+            const threadReplies = props.threadMessages?.[messageIdentifier]
+            const threadReplyCount = threadReplies?.length
             return (
               <MessageCanvas
                 key={key}
@@ -228,11 +249,16 @@ export default function MessageSpace({
                 getActionsComponent={props.getActionsComponent}
                 getProfileComponent={props.getProfileComponent}
                 ref={index === currentMessagesLength - 1 ? scrollEndRef : null}
+                {...(threadReplies && {
+                  threadReplyCount: threadReplyCount,
+                  onThreadOpen: () => props.onThreadOpen?.(messageIdentifier),
+                  isActiveThread: props.activeThreadId === messageIdentifier,
+                })}
               >
                 <ElementRenderer
                   ws={props.ws}
                   sender={props.sender}
-                  messages={hasResponse ? [messages[0]] : messages}
+                  messages={hasResponse ? [firstMessage] : messages}
                   supportedElements={props.supportedElements}
                 />
               </MessageCanvas>

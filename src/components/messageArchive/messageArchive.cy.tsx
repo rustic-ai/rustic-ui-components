@@ -120,7 +120,7 @@ describe('MessageArchive Component', () => {
       })
     })
 
-    it.only(`scrolls to bottom when "Go to bottom" button is clicked on ${viewport} screen`, () => {
+    it(`scrolls to bottom when "Go to bottom" button is clicked on ${viewport} screen`, () => {
       const waitTime = 500
 
       cy.viewport(viewport)
@@ -170,6 +170,259 @@ describe('MessageArchive Component', () => {
 
       cy.get(infoMessage).should('exist')
       cy.get(infoMessage).should('contain', infoMessageText)
+    })
+
+    it(`displays thread reply count when threadMessages are provided on ${viewport} screen`, () => {
+      const message1Id = 'message-1'
+      const message2Id = 'message-2'
+
+      const threadMessages = {
+        [message1Id]: [
+          {
+            ...humanMessageData,
+            id: getUUID(),
+            timestamp: '2024-01-02T00:02:00.000Z',
+            format: 'TextFormat',
+            data: {
+              text: 'Thread reply 1',
+            },
+          },
+          {
+            ...agentMessageData,
+            id: getUUID(),
+            timestamp: '2024-01-02T00:03:00.000Z',
+            format: 'TextFormat',
+            data: {
+              text: 'Thread reply 2',
+            },
+          },
+        ],
+        [message2Id]: [
+          {
+            ...humanMessageData,
+            id: getUUID(),
+            timestamp: '2024-01-02T00:14:00.000Z',
+            format: 'TextFormat',
+            data: {
+              text: 'Single thread reply',
+            },
+          },
+        ],
+      }
+
+      cy.viewport(viewport)
+      cy.mount(
+        <MessageArchive
+          getHistoricMessages={() => {
+            return new Promise((resolve) => {
+              resolve([
+                {
+                  ...humanMessageData,
+                  id: message1Id,
+                  timestamp: '2024-01-02T00:00:00.000Z',
+                  format: 'TextFormat',
+                  data: {
+                    text: 'First message with threads',
+                  },
+                },
+                {
+                  ...agentMessageData,
+                  id: message2Id,
+                  timestamp: '2024-01-02T00:13:00.000Z',
+                  format: 'TextFormat',
+                  data: {
+                    text: 'Second message with thread',
+                  },
+                },
+              ])
+            })
+          }}
+          threadMessages={threadMessages}
+          supportedElements={supportedElements}
+        />
+      )
+
+      const expectedThreadCount = 2
+      cy.get('.rustic-thread-reply-count').should(
+        'have.length',
+        expectedThreadCount
+      )
+      cy.get('.rustic-thread-reply-count').first().should('contain', '2')
+      cy.get('.rustic-thread-reply-count').first().should('contain', 'replies')
+      cy.get('.rustic-thread-reply-count').last().should('contain', '1')
+      cy.get('.rustic-thread-reply-count').last().should('contain', 'reply')
+    })
+
+    it(`calls onThreadOpen when thread reply count is clicked on ${viewport} screen`, () => {
+      const onThreadOpen = cy.stub()
+      const message1Id = 'message-1'
+
+      const threadMessages = {
+        [message1Id]: [
+          {
+            ...humanMessageData,
+            id: getUUID(),
+            timestamp: '2024-01-02T00:02:00.000Z',
+            format: 'TextFormat',
+            data: {
+              text: 'Thread reply',
+            },
+          },
+        ],
+      }
+
+      cy.viewport(viewport)
+      cy.mount(
+        <MessageArchive
+          getHistoricMessages={() => {
+            return new Promise((resolve) => {
+              resolve([
+                {
+                  ...humanMessageData,
+                  id: message1Id,
+                  timestamp: '2024-01-02T00:00:00.000Z',
+                  format: 'TextFormat',
+                  data: {
+                    text: 'Message with thread',
+                  },
+                },
+              ])
+            })
+          }}
+          threadMessages={threadMessages}
+          onThreadOpen={onThreadOpen}
+          supportedElements={supportedElements}
+        />
+      )
+
+      cy.get('.rustic-thread-reply-count').click()
+      cy.wrap(onThreadOpen).should('be.calledWith', message1Id)
+    })
+
+    it(`highlights active thread message on ${viewport} screen`, () => {
+      const message1Id = 'message-1'
+      const message2Id = 'message-2'
+
+      const threadMessages = {
+        [message1Id]: [
+          {
+            ...humanMessageData,
+            id: getUUID(),
+            timestamp: '2024-01-02T00:02:00.000Z',
+            format: 'TextFormat',
+            data: {
+              text: 'Thread reply',
+            },
+          },
+        ],
+        [message2Id]: [
+          {
+            ...humanMessageData,
+            id: getUUID(),
+            timestamp: '2024-01-02T00:14:00.000Z',
+            format: 'TextFormat',
+            data: {
+              text: 'Thread reply',
+            },
+          },
+        ],
+      }
+
+      cy.viewport(viewport)
+      cy.mount(
+        <MessageArchive
+          getHistoricMessages={() => {
+            return new Promise((resolve) => {
+              resolve([
+                {
+                  ...humanMessageData,
+                  id: message1Id,
+                  timestamp: '2024-01-02T00:00:00.000Z',
+                  format: 'TextFormat',
+                  data: {
+                    text: 'First message',
+                  },
+                },
+                {
+                  ...agentMessageData,
+                  id: message2Id,
+                  timestamp: '2024-01-02T00:13:00.000Z',
+                  format: 'TextFormat',
+                  data: {
+                    text: 'Second message',
+                  },
+                },
+              ])
+            })
+          }}
+          threadMessages={threadMessages}
+          activeThreadId={message1Id}
+          supportedElements={supportedElements}
+        />
+      )
+
+      const messageCanvas = '[data-cy=message-canvas]'
+      cy.get(messageCanvas)
+        .first()
+        .find('.rustic-message-container')
+        .should('have.css', 'background-color')
+        .and('not.equal', 'rgb(255, 255, 255)')
+    })
+
+    it(`handles thread messages with update messages on ${viewport} screen`, () => {
+      const updateId = 'update-message-1'
+
+      const threadMessages = {
+        [updateId]: [
+          {
+            ...humanMessageData,
+            id: getUUID(),
+            timestamp: '2024-01-02T00:02:00.000Z',
+            format: 'TextFormat',
+            data: {
+              text: 'Thread reply to update message',
+            },
+          },
+        ],
+      }
+
+      cy.viewport(viewport)
+      cy.mount(
+        <MessageArchive
+          getHistoricMessages={() => {
+            return new Promise((resolve) => {
+              resolve([
+                {
+                  ...agentMessageData,
+                  id: getUUID(),
+                  timestamp: '2024-01-02T00:00:00.000Z',
+                  format: 'updateMarkdownFormat',
+                  data: {
+                    text: 'First part',
+                    updateId: updateId,
+                  },
+                },
+                {
+                  ...agentMessageData,
+                  id: getUUID(),
+                  timestamp: '2024-01-02T00:01:00.000Z',
+                  format: 'updateMarkdownFormat',
+                  data: {
+                    text: ' of message',
+                    updateId: updateId,
+                  },
+                },
+              ])
+            })
+          }}
+          threadMessages={threadMessages}
+          supportedElements={supportedElements}
+        />
+      )
+
+      cy.get('.rustic-thread-reply-count').should('have.length', 1)
+      cy.get('.rustic-thread-reply-count').should('contain', '1')
+      cy.get('.rustic-thread-reply-count').should('contain', 'reply')
     })
   })
 })

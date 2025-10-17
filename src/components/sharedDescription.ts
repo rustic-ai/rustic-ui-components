@@ -154,4 +154,11 @@ export const textInputDescription: InputType = {
       defaultValue: { summary: '5' },
     },
   },
+  threads: {
+    description:
+      'Optional array of thread IDs to associate with the message. If provided, the message will be linked to the specified threads.',
+    table: {
+      type: { summary: 'string[]' },
+    },
+  },
 }

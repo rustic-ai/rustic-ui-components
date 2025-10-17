@@ -202,19 +202,21 @@ export function toChatRequest(
   }
 }
 
+export function getMessageIdentifier(message: Message): string {
+  if (message.format.startsWith('update') && message.data?.updateId) {
+    return message.data.updateId
+  } else if (message.format.includes('Response') && message.data?.inReplyTo) {
+    return message.data.inReplyTo
+  } else {
+    return message.id
+  }
+}
+
 export function getCombinedMessages(
   messages: { [key: string]: Message[] },
   message: Message
 ) {
-  let key
-
-  if (message.format.startsWith('update')) {
-    key = message.data.updateId
-  } else if (message.format.includes('Response')) {
-    key = message.data.inReplyTo
-  } else {
-    key = message.id
-  }
+  let key = getMessageIdentifier(message)
 
   if (!key) {
     return messages

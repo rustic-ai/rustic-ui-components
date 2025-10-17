@@ -444,5 +444,256 @@ describe('MessageSpace Component', () => {
       cy.get(messageContainer).should('contain', 'top prompt')
       cy.get(messageSpace).should('not.contain', 'bottom prompt')
     })
+
+    it(`displays thread reply count when threadMessages are provided on ${viewport} screen`, () => {
+      const mockWsClient = {
+        send: cy.stub(),
+        close: cy.stub(),
+        reconnect: cy.stub(),
+      }
+      const message1Id = 'message-1'
+      const message2Id = 'message-2'
+
+      const threadMessages = {
+        [message1Id]: [
+          {
+            ...humanMessageData,
+            id: getUUID(),
+            timestamp: '2024-01-02T00:02:00.000Z',
+            format: 'TextFormat',
+            data: {
+              text: 'Thread reply 1',
+            },
+          },
+          {
+            ...agentMessageData,
+            id: getUUID(),
+            timestamp: '2024-01-02T00:03:00.000Z',
+            format: 'TextFormat',
+            data: {
+              text: 'Thread reply 2',
+            },
+          },
+        ],
+        [message2Id]: [
+          {
+            ...humanMessageData,
+            id: getUUID(),
+            timestamp: '2024-01-02T00:14:00.000Z',
+            format: 'TextFormat',
+            data: {
+              text: 'Single thread reply',
+            },
+          },
+        ],
+      }
+
+      cy.viewport(viewport)
+      cy.mount(
+        <MessageSpace
+          ws={mockWsClient}
+          sender={testUser}
+          receivedMessages={[
+            {
+              ...humanMessageData,
+              id: message1Id,
+              timestamp: '2024-01-02T00:00:00.000Z',
+              format: 'TextFormat',
+              data: {
+                text: 'First message with threads',
+              },
+            },
+            {
+              ...agentMessageData,
+              id: message2Id,
+              timestamp: '2024-01-02T00:13:00.000Z',
+              format: 'TextFormat',
+              data: {
+                text: 'Second message with thread',
+              },
+            },
+          ]}
+          threadMessages={threadMessages}
+          supportedElements={supportedElements}
+        />
+      )
+
+      const expectedThreadCount = 2
+      cy.get('.rustic-thread-reply-count').should(
+        'have.length',
+        expectedThreadCount
+      )
+      cy.get('.rustic-thread-reply-count').first().should('contain', '2')
+      cy.get('.rustic-thread-reply-count').first().should('contain', 'replies')
+      cy.get('.rustic-thread-reply-count').last().should('contain', '1')
+      cy.get('.rustic-thread-reply-count').last().should('contain', 'reply')
+    })
+
+    it(`calls onThreadOpen when thread reply count is clicked on ${viewport} screen`, () => {
+      const mockWsClient = {
+        send: cy.stub(),
+        close: cy.stub(),
+        reconnect: cy.stub(),
+      }
+      const onThreadOpen = cy.stub()
+      const message1Id = 'message-1'
+
+      const threadMessages = {
+        [message1Id]: [
+          {
+            ...humanMessageData,
+            id: getUUID(),
+            timestamp: '2024-01-02T00:02:00.000Z',
+            format: 'TextFormat',
+            data: {
+              text: 'Thread reply',
+            },
+          },
+        ],
+      }
+
+      cy.viewport(viewport)
+      cy.mount(
+        <MessageSpace
+          ws={mockWsClient}
+          sender={testUser}
+          receivedMessages={[
+            {
+              ...humanMessageData,
+              id: message1Id,
+              timestamp: '2024-01-02T00:00:00.000Z',
+              format: 'TextFormat',
+              data: {
+                text: 'Message with thread',
+              },
+            },
+          ]}
+          threadMessages={threadMessages}
+          onThreadOpen={onThreadOpen}
+          supportedElements={supportedElements}
+        />
+      )
+
+      cy.get('.rustic-thread-reply-count').click()
+      cy.wrap(onThreadOpen).should('be.calledWith', message1Id)
+    })
+
+    it(`highlights active thread message on ${viewport} screen`, () => {
+      const mockWsClient = {
+        send: cy.stub(),
+        close: cy.stub(),
+        reconnect: cy.stub(),
+      }
+      const message1Id = 'message-1'
+      const message2Id = 'message-2'
+
+      const threadMessages = {
+        [message1Id]: [
+          {
+            ...humanMessageData,
+            id: getUUID(),
+            timestamp: '2024-01-02T00:02:00.000Z',
+            format: 'TextFormat',
+            data: {
+              text: 'Thread reply',
+            },
+          },
+        ],
+        [message2Id]: [
+          {
+            ...humanMessageData,
+            id: getUUID(),
+            timestamp: '2024-01-02T00:14:00.000Z',
+            format: 'TextFormat',
+            data: {
+              text: 'Thread reply',
+            },
+          },
+        ],
+      }
+
+      cy.viewport(viewport)
+      cy.mount(
+        <MessageSpace
+          ws={mockWsClient}
+          sender={testUser}
+          receivedMessages={[
+            {
+              ...humanMessageData,
+              id: message1Id,
+              timestamp: '2024-01-02T00:00:00.000Z',
+              format: 'TextFormat',
+              data: {
+                text: 'First message',
+              },
+            },
+            {
+              ...agentMessageData,
+              id: message2Id,
+              timestamp: '2024-01-02T00:13:00.000Z',
+              format: 'TextFormat',
+              data: {
+                text: 'Second message',
+              },
+            },
+          ]}
+          threadMessages={threadMessages}
+          activeThreadId={message1Id}
+          supportedElements={supportedElements}
+        />
+      )
+
+      cy.get(messageCanvas)
+        .first()
+        .find('.rustic-message-container')
+        .should('have.css', 'background-color')
+        .and('not.equal', 'rgb(255, 255, 255)')
+    })
+
+    it(`renders rootMessages at the top when provided on ${viewport} screen`, () => {
+      const mockWsClient = {
+        send: cy.stub(),
+        close: cy.stub(),
+        reconnect: cy.stub(),
+      }
+
+      const rootMessages = [
+        {
+          ...agentMessageData,
+          id: getUUID(),
+          timestamp: '2024-01-02T00:00:00.000Z',
+          format: 'TextFormat',
+          data: {
+            text: 'Root message',
+          },
+        },
+      ]
+
+      cy.viewport(viewport)
+      cy.mount(
+        <MessageSpace
+          ws={mockWsClient}
+          sender={testUser}
+          rootMessages={rootMessages}
+          receivedMessages={[
+            {
+              ...humanMessageData,
+              id: getUUID(),
+              timestamp: '2024-01-02T00:01:00.000Z',
+              format: 'TextFormat',
+              data: {
+                text: 'Reply message',
+              },
+            },
+          ]}
+          supportedElements={supportedElements}
+        />
+      )
+
+      const expectedMessageCount = 2
+      cy.get(messageCanvas).should('have.length', expectedMessageCount)
+      cy.get(messageCanvas).first().should('contain', 'Root message')
+      cy.get(messageCanvas).last().should('contain', 'Reply message')
+    })
   })
 })
