@@ -73,5 +73,70 @@ describe('VegaLiteViz', () => {
       )
       cy.get('p').contains('Failed to load the chart.')
     })
+
+    it(`should render chart correctly when toggled from hidden to visible on ${viewport} screen`, () => {
+      cy.viewport(viewport)
+
+      // Mount with chart initially hidden
+      cy.mount(
+        <div>
+          <button id="toggle-btn">Toggle</button>
+          <div
+            id="chart-container"
+            style={{ display: 'none', width: '500px', height: '300px' }}
+          >
+            <VegaLiteViz
+              spec={{
+                $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+                width: 'container',
+                height: 'container',
+                data: {
+                  values: [
+                    { a: 'A', b: 28 },
+                    { a: 'B', b: 55 },
+                    { a: 'C', b: 43 },
+                  ],
+                },
+                mark: 'bar',
+                encoding: {
+                  x: { field: 'a', type: 'nominal', axis: { labelAngle: 0 } },
+                  y: { field: 'b', type: 'quantitative' },
+                },
+              }}
+              theme={{
+                dark: 'dark',
+              }}
+            />
+          </div>
+        </div>
+      ).then(() => {
+        // Set up toggle functionality
+        cy.get('#toggle-btn').then(($btn) => {
+          $btn.on('click', () => {
+            const container = document.getElementById('chart-container')
+            if (container) {
+              container.style.display =
+                container.style.display === 'none' ? 'block' : 'none'
+            }
+          })
+        })
+      })
+
+      cy.get('#chart-container').should('not.be.visible')
+      cy.get('#toggle-btn').click()
+      cy.get('#chart-container').should('be.visible')
+
+      // Wait for chart canvas/SVG to render with proper dimensions
+      cy.get('.rustic-vega-lite canvas, .rustic-vega-lite svg', {
+        timeout: 10000,
+      })
+        .should('exist')
+        .and(($el) => {
+          const width = $el.width()
+          const height = $el.height()
+          expect(width).to.be.greaterThan(0)
+          expect(height).to.be.greaterThan(0)
+        })
+    })
   })
 })

@@ -214,16 +214,43 @@ function VegaLiteViz({
   }
 
   useEffect(() => {
-    renderChart()
+    if (!chartRef.current) {
+      return
+    }
+
+    let resizeObserver: ResizeObserver | null = null
+
+    // Use ResizeObserver to detect when container becomes visible
+    resizeObserver = new ResizeObserver((entries) => {
+      const hasValidDimensions = entries.some(
+        (entry) => entry.contentRect.width > 0
+      )
+
+      if (hasValidDimensions) {
+        // Defer rendering to after browser repaint to prevent ResizeObserver loop errors
+        requestAnimationFrame(() => {
+          renderChart()
+        })
+      }
+    })
+
+    resizeObserver.observe(chartRef.current)
+
+    requestAnimationFrame(() => {
+      renderChart()
+    })
 
     function handleResize() {
-      renderChart()
+      requestAnimationFrame(() => {
+        renderChart()
+      })
     }
 
     window.addEventListener('resize', handleResize)
 
     return () => {
       window.removeEventListener('resize', handleResize)
+      resizeObserver?.disconnect()
     }
   }, [props.spec, isDarkTheme])
 
