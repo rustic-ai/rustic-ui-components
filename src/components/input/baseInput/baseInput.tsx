@@ -137,7 +137,7 @@ function BaseInputElement(
 
   const database = new Database({ dataSource: props.emojiDataSource })
   const isEmptyMessage = !messageText.trim().length
-  const speechToTextTooltipTitle = `${isRecording ? 'Stop' : 'Start'} speech to text`
+  const speechToTextTooltipTitle = `${isRecording ? 'Stop' : 'Start'} dictation`
   const featureButtonColor = isFocused ? 'primary.main' : 'primary.light'
   const speechToTextIconColor = isRecording ? 'error.main' : featureButtonColor
   const speechToTextIconName = isRecording ? 'stop_circle' : 'speech_to_text'
