@@ -1,6 +1,7 @@
 import './markedMarkdown.css'
 
 import Alert from '@mui/material/Alert'
+import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
@@ -14,6 +15,7 @@ import { type TextData, UpdateType } from '../types'
  * This component supports updates by appending/replacing the existing content through the `updatedData` attribute.
  */
 const MarkedMarkdown = (props: TextData) => {
+  const theme = useTheme()
   const [content, setContent] = useState(props.text)
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -72,6 +74,11 @@ const MarkedMarkdown = (props: TextData) => {
         component="div"
         className="rustic-markdown"
         dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(content) }}
+        sx={{
+          '& table, & th, & td': {
+            border: `1px solid ${theme.palette.divider}`,
+          },
+        }}
       />
     )
   }

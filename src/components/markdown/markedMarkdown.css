@@ -1,4 +1,17 @@
-.rustic-markdown p {
+.rustic-markdown p:first-child {
   margin-block-start: 0;
+}
+
+.rustic-markdown p:last-child {
   margin-block-end: 0;
+}
+
+.rustic-markdown table {
+  border-collapse: collapse;
+}
+
+.rustic-markdown th,
+.rustic-markdown td {
+  padding: 8px;
+  text-align: left;
 }
