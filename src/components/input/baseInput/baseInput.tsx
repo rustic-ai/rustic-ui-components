@@ -140,7 +140,7 @@ function BaseInputElement(
   const speechToTextTooltipTitle = `${isRecording ? 'Stop' : 'Start'} dictation`
   const featureButtonColor = isFocused ? 'primary.main' : 'primary.light'
   const speechToTextIconColor = isRecording ? 'error.main' : featureButtonColor
-  const speechToTextIconName = isRecording ? 'stop_circle' : 'speech_to_text'
+  const speechToTextIconName = isRecording ? 'stop_circle' : 'mic'
   const [memberSearchResults, setMemberSearchResults] = useState<Participant[]>(
     []
   )

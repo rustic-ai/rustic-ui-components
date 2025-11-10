@@ -273,7 +273,7 @@ export function generateTheme(
       },
       body1Bold: {
         fontStyle: 'normal',
-        fontWeight: 600,
+        fontWeight: 700,
         fontSize: '16px',
         letterSpacing: '0px',
         lineHeight: 1.5,
