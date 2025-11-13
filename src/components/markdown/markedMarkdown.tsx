@@ -8,6 +8,7 @@ import { marked } from 'marked'
 import React from 'react'
 import { useEffect, useState } from 'react'
 
+import { getLatestValue } from '../helper'
 import { type TextData, UpdateType } from '../types'
 
 /** The `MarkedMarkdown` component renders markdown-formatted text content into HTML.
@@ -18,6 +19,13 @@ const MarkedMarkdown = (props: TextData) => {
   const theme = useTheme()
   const [content, setContent] = useState(props.text)
   const [errorMessage, setErrorMessage] = useState('')
+
+  const displayTitle = getLatestValue(props.updatedData, 'title', props.title)
+  const displayDescription = getLatestValue(
+    props.updatedData,
+    'description',
+    props.description
+  )
 
   function getValidatedText(text: unknown): string {
     if (typeof text !== 'string') {
@@ -85,8 +93,8 @@ const MarkedMarkdown = (props: TextData) => {
 
   return (
     <>
-      {props.title && <Typography variant="h6">{props.title}</Typography>}
-      {props.description && renderMarkdownToHtml(props.description)}
+      {displayTitle && <Typography variant="h6">{displayTitle}</Typography>}
+      {displayDescription && renderMarkdownToHtml(displayDescription)}
       {renderMarkdownToHtml(content)}
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
     </>

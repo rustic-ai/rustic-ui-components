@@ -252,3 +252,15 @@ export function getCombinedMessages(
 
   return newMessages
 }
+
+export function getLatestValue<T, K extends keyof T>(
+  updatedData: T[] | undefined,
+  key: K,
+  fallbackValue: T[K]
+): T[K] {
+  if (updatedData && updatedData.length > 0) {
+    const latestUpdate = updatedData[updatedData.length - 1]
+    return (latestUpdate[key] ?? fallbackValue) as T[K]
+  }
+  return fallbackValue
+}

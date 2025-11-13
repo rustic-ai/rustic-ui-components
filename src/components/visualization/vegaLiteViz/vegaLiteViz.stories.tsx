@@ -810,6 +810,7 @@ export const StreamingLineChartWithAppend: StoryFn = () => {
   const [newPoints, setNewPoints] = useState<
     Array<{ x: number; y: number; category: string }>
   >([])
+
   const counterRef = useRef(0)
 
   useEffect(() => {
@@ -832,6 +833,8 @@ export const StreamingLineChartWithAppend: StoryFn = () => {
     newPoints.length > 0
       ? [
           {
+            title: `Streaming Line Chart - v${counterRef.current}`,
+            description: `This chart demonstrates real-time data streaming with new points added every second. Data is updated at point ${counterRef.current}.`,
             spec: {
               ...streamingSpec,
               data: {
@@ -856,6 +859,7 @@ export const StreamingLineChartWithAppend: StoryFn = () => {
       <VegaLiteViz
         spec={streamingSpec}
         updatedData={updatedData}
+        updateType={UpdateType.Append}
         theme={{
           dark: 'dark',
         }}
@@ -892,6 +896,8 @@ export const StreamingLineChartWithReplace: StoryFn = () => {
     newPoints.length > 0
       ? [
           {
+            title: `Streaming Line Chart - v${counterRef.current}`,
+            description: `This chart demonstrates real-time data streaming with new points replace old ones every second. Data is replaced at point ${counterRef.current}.`,
             spec: {
               ...streamingSpec,
               data: {
@@ -916,6 +922,7 @@ export const StreamingLineChartWithReplace: StoryFn = () => {
       <VegaLiteViz
         spec={streamingSpec}
         updatedData={updatedData}
+        updateType={UpdateType.Replace}
         theme={{
           dark: 'dark',
         }}

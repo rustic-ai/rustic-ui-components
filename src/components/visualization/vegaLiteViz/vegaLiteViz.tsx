@@ -11,6 +11,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import * as vega from 'vega'
 import { default as VegaEmbed } from 'vega-embed'
 
+import { getLatestValue } from '../../helper'
 import MarkedMarkdown from '../../markdown/markedMarkdown'
 import PopoverMenu, { type PopoverMenuItem } from '../../menu/popoverMenu'
 import { UpdateType } from '../../types'
@@ -42,6 +43,12 @@ function VegaLiteViz({
   const isDarkTheme = rusticTheme.palette.mode === 'dark'
   const defaultFont = rusticTheme.typography.fontFamily
 
+  const displayTitle = getLatestValue(props.updatedData, 'title', props.title)
+  const displayDescription = getLatestValue(
+    props.updatedData,
+    'description',
+    props.description
+  )
   const customHttpLoader = (
     url: string,
     options: RequestInit
@@ -220,25 +227,33 @@ function VegaLiteViz({
 
     let resizeObserver: ResizeObserver | null = null
 
-    // Use ResizeObserver to detect when container becomes visible
-    resizeObserver = new ResizeObserver((entries) => {
-      const hasValidDimensions = entries.some(
-        (entry) => entry.contentRect.width > 0
-      )
+    // Check if container is visible
+    const rect = chartRef.current.getBoundingClientRect()
+    const isVisible = rect.width > 0
 
-      if (hasValidDimensions) {
-        // Defer rendering to after browser repaint to prevent ResizeObserver loop errors
-        requestAnimationFrame(() => {
-          renderChart()
-        })
-      }
-    })
+    if (isVisible) {
+      // Container is already visible, render immediately
+      requestAnimationFrame(() => {
+        renderChart()
+      })
+    } else {
+      // Container not visible yet, use ResizeObserver to detect when it becomes visible
+      resizeObserver = new ResizeObserver((entries) => {
+        const hasValidDimensions = entries.some(
+          (entry) => entry.contentRect.width > 0
+        )
+        if (hasValidDimensions && resizeObserver) {
+          // Render once and disconnect
+          requestAnimationFrame(() => {
+            renderChart()
+          })
+          resizeObserver.disconnect()
+          resizeObserver = null
+        }
+      })
 
-    resizeObserver.observe(chartRef.current)
-
-    requestAnimationFrame(() => {
-      renderChart()
-    })
+      resizeObserver.observe(chartRef.current)
+    }
 
     function handleResize() {
       requestAnimationFrame(() => {
@@ -331,8 +346,24 @@ function VegaLiteViz({
           <PopoverMenu menuItems={menuItems} ariaLabel="Download options" />
         </Box>
 
-        {props.title && <Typography variant="h6">{props.title}</Typography>}
-        {props.description && <MarkedMarkdown text={props.description} />}
+        {displayTitle && <Typography variant="h6">{displayTitle}</Typography>}
+        {props.description && (
+          <MarkedMarkdown
+            text={props.description}
+            updatedData={
+              props.updatedData &&
+              props.updatedData.length > 0 &&
+              displayDescription
+                ? [
+                    {
+                      text: displayDescription,
+                      updateType: UpdateType.Replace,
+                    },
+                  ]
+                : undefined
+            }
+          />
+        )}
         <Box textAlign="center" mt={1}>
           {typeof props.spec.title === 'string' && (
             <Typography variant="subtitle2">{props.spec.title}</Typography>
