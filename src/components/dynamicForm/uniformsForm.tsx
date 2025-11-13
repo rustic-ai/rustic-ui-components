@@ -1,3 +1,5 @@
+import './uniformsForm.css'
+
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Ajv, { type JSONSchemaType } from 'ajv'
@@ -8,6 +10,11 @@ import { v4 as getUUID } from 'uuid'
 
 import MarkedMarkdown from '../markdown/markedMarkdown'
 import type { DynamicFormProps, Message } from '../types'
+import QuestionField from './questionField'
+
+const customComponents = {
+  QuestionField: QuestionField,
+}
 
 /**
  * The `UniformsForm` component provides a user interface for rendering a dynamic form using [uniforms](https://uniforms.tools/) and sending the response as a message on the websocket.
@@ -21,7 +28,6 @@ import type { DynamicFormProps, Message } from '../types'
  */
 export default function UniformsForm(props: DynamicFormProps) {
   const [data, setData] = useState(props.data)
-
   useEffect(() => {
     if (props.data) {
       setData(props.data)
@@ -45,6 +51,20 @@ export default function UniformsForm(props: DynamicFormProps) {
 
   const schemaValidator = createValidator(props.schema)
 
+  const processSchema = (schema: any) => {
+    if (schema.properties) {
+      Object.keys(schema.properties).forEach((key) => {
+        const property = schema.properties[key]
+
+        if (property.uniforms?.options) {
+          property.uniforms.component = customComponents.QuestionField
+        }
+      })
+    }
+  }
+
+  processSchema(props.schema)
+
   const bridge = new JSONSchemaBridge({
     schema: props.schema,
     validator: schemaValidator,
@@ -66,7 +86,7 @@ export default function UniformsForm(props: DynamicFormProps) {
   }
 
   return (
-    <Box className="rustic-form">
+    <Box>
       {props.title && <Typography variant="h6">{props.title}</Typography>}
       {props.description && <MarkedMarkdown text={props.description} />}
       <AutoForm
