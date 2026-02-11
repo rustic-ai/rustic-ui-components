@@ -30,7 +30,7 @@
     "@mui/material": "6.1.8",
     "@mui/styled-engine-sc": "6.1.8",
     "@mui/system": "6.1.8",
-    "axios": "1.12.0",
+    "axios": "1.13.5",
     "dompurify": "3.2.6",
     "marked": "16.3.0",
     "react": "18.3.1"
