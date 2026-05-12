@@ -233,8 +233,8 @@ export function PlaybackRateButton(props: MediaControls) {
   return (
     <Tooltip
       title="Playback rate"
-      PopperProps={{
-        container: document.fullscreenElement ?? document.body,
+      slotProps={{
+        popper: { container: document.fullscreenElement ?? document.body },
       }}
     >
       <Button

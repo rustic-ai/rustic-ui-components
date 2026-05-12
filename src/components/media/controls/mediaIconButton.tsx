@@ -51,7 +51,7 @@ export function MediaIconButton(props: MediaIconButtonProps) {
   return (
     <Tooltip
       title={controls[props.action].label}
-      PopperProps={{ container: document.fullscreenElement ?? document.body }}
+      slotProps={{ popper: { container: document.fullscreenElement ?? document.body } }}
     >
       <IconButton
         onClick={props.onClick}

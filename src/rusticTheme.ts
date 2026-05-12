@@ -391,44 +391,44 @@ export function generateTheme(
               color: modeColors.textDisabled,
               border: `1px solid ${modeColors.actionDisabled}`,
             },
-          },
-          containedPrimary: {
-            background: modeColors.primaryMain,
-            color: modeColors.primaryContrastText,
-            '&:hover': {
-              background: modeColors.primaryLight,
-            },
-            '&:active': {
+            '&.MuiButton-containedPrimary': {
               background: modeColors.primaryMain,
-              outline: `2px solid ${modeColors.primaryLight}`,
+              color: modeColors.primaryContrastText,
+              '&:hover': {
+                background: modeColors.primaryLight,
+              },
+              '&:active': {
+                background: modeColors.primaryMain,
+                outline: `2px solid ${modeColors.primaryLight}`,
+              },
             },
-          },
-          containedSecondary: {
-            '&:hover': {
-              background: modeColors.secondaryLight,
+            '&.MuiButton-containedSecondary': {
+              '&:hover': {
+                background: modeColors.secondaryLight,
+              },
+              '&:active': {
+                background: modeColors.secondaryMain,
+                outline: `2px solid ${modeColors.secondaryLight}`,
+              },
             },
-            '&:active': {
-              background: modeColors.secondaryMain,
-              outline: `2px solid ${modeColors.secondaryLight}`,
+            '&.MuiButton-outlinedSecondary': {
+              color: modeColors.textPrimary,
+              '&:hover': {
+                border: `1px solid ${modeColors.secondaryDark}`,
+                background: modeColors.secondaryFocus,
+              },
+              '&:active': {
+                outline: `2px solid ${modeColors.secondaryLight}`,
+              },
             },
-          },
-          outlinedSecondary: {
-            color: modeColors.textPrimary,
-            '&:hover': {
-              border: `1px solid ${modeColors.secondaryDark}`,
-              background: modeColors.secondaryFocus,
-            },
-            '&:active': {
-              outline: `2px solid ${modeColors.secondaryLight}`,
-            },
-          },
-          textSecondary: {
-            color: modeColors.textPrimary,
-            '&:hover': {
-              background: modeColors.secondaryFocus,
-            },
-            '&.Mui-disabled': {
-              border: 'none',
+            '&.MuiButton-textSecondary': {
+              color: modeColors.textPrimary,
+              '&:hover': {
+                background: modeColors.secondaryFocus,
+              },
+              '&.Mui-disabled': {
+                border: 'none',
+              },
             },
           },
         },
