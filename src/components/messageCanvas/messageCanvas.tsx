@@ -52,7 +52,7 @@ function MessageCanvasElement(
     >
       <Stack
         direction="row"
-        alignItems="center"
+        sx={{ alignItems: 'center' }}
         spacing={1}
         className="rustic-header"
       >

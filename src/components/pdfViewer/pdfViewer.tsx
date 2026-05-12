@@ -204,9 +204,7 @@ function PDFViewer(props: PDFViewerProps) {
       </Box>
       <Stack
         direction="row"
-        justifyContent="center"
-        alignItems="center"
-        gap={1}
+        sx={{ justifyContent: 'center', alignItems: 'center', gap: 1 }}
       >
         <ViewerControlButton
           action="previousPage"
