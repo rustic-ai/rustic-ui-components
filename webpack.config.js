@@ -50,7 +50,7 @@ const commonConfig = {
     clean: true,
   },
   experiments: {
-    asyncWebAssembly: true,
+    asyncWebAssembly: false,
     syncWebAssembly: false,
   },
 }

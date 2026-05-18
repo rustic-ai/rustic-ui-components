@@ -71,7 +71,7 @@ const preview = {
     },
     actions: { argTypesRegex: '^on[A-Z].*' },
     viewport: {
-      viewports: INITIAL_VIEWPORTS,
+      options: INITIAL_VIEWPORTS,
     },
     controls: { expanded: true },
     docs: {

@@ -104,10 +104,7 @@ describe('TextInput', () => {
         cy.get(suggestionMenu).should('exist')
         cy.get(`${suggestionMenu} li`)
           .first()
-          .should(
-            'contain.text',
-            '😃 faccina con un gran sorriso e occhi spalancati'
-          )
+          .should('contain.text', '😃 faccina con sorriso e occhi spalancati')
           .click()
         cy.get('textarea').invoke('val').should('equal', '😃')
       })

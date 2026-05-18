@@ -5,6 +5,7 @@ import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
+import cypress from "eslint-plugin-cypress";
 import muiPathImports from "eslint-plugin-mui-path-imports";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import unusedImports from "eslint-plugin-unused-imports";
@@ -22,10 +23,9 @@ export default [{
 }, ...compat.extends(
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:cypress/recommended',
     'plugin:storybook/recommended',
     'prettier',
-), {
+), cypress.configs.recommended, {
     plugins: {
         "unused-imports": unusedImports,
         "@typescript-eslint": typescriptEslint,

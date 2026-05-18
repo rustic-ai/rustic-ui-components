@@ -97,9 +97,13 @@ function VegaLiteViz({
     let allData: Record<string, unknown>[] = []
     let isOldDataRemoved = false
     if (updateData) {
-      const lastUpdate = updateData.at(-1)
-      if (lastUpdate?.updateType === UpdateType.Replace) {
-        if (lastUpdate.spec?.data && 'values' in lastUpdate.spec.data) {
+      if (props.updateType === UpdateType.Replace) {
+        const lastUpdate = updateData.at(-1)
+        if (
+          lastUpdate &&
+          lastUpdate.spec?.data &&
+          'values' in lastUpdate.spec.data
+        ) {
           const values = lastUpdate.spec.data.values
           if (Array.isArray(values)) {
             isOldDataRemoved = true
@@ -111,12 +115,7 @@ function VegaLiteViz({
           if (format.spec?.data && 'values' in format.spec.data) {
             const values = format.spec.data.values
             if (Array.isArray(values)) {
-              if (format.updateType === UpdateType.Append) {
-                allData.push(...values)
-              } else if (format.updateType === UpdateType.Replace) {
-                isOldDataRemoved = true
-                allData = [...values]
-              }
+              allData.push(...values)
             }
           }
         })
@@ -351,13 +350,13 @@ function VegaLiteViz({
           <MarkedMarkdown
             text={props.description}
             updatedData={
+              props.updateType === UpdateType.Replace &&
               props.updatedData &&
-              props.updatedData.length > 0 &&
+              props.updatedData?.length > 0 &&
               displayDescription
                 ? [
                     {
                       text: displayDescription,
-                      updateType: UpdateType.Replace,
                     },
                   ]
                 : undefined

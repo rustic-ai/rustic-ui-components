@@ -1,17 +1,18 @@
 import './perspectiveViz.css'
-import '@finos/perspective-viewer-datagrid'
-import '@finos/perspective-viewer-d3fc'
-import '@finos/perspective-viewer/dist/css/pro.css'
-import '@finos/perspective-viewer/dist/css/pro-dark.css'
+import '@perspective-dev/viewer-datagrid'
+import '@perspective-dev/viewer-d3fc'
+import '@perspective-dev/viewer/dist/css/pro.css'
+import '@perspective-dev/viewer/dist/css/pro-dark.css'
 
-import type { Client, Table, View } from '@finos/perspective'
-import type {
-  ColumnConfigValues,
-  HTMLPerspectiveViewerElement,
-} from '@finos/perspective-viewer'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Stack from '@mui/system/Stack'
+import type { Client, View } from '@perspective-dev/client'
+import type {
+  ColumnConfigValues,
+  HTMLPerspectiveViewerElement,
+  ViewerConfigUpdate,
+} from '@perspective-dev/viewer'
 import React, { useEffect, useRef, useState } from 'react'
 
 import MarkedMarkdown from '../../markdown/markedMarkdown'
@@ -56,18 +57,33 @@ export function transformTableData(
 
 /** The PerspectiveViz component is designed to efficiently display and process large datasets, supporting interactive features such as filtering, sorting, and aggregating data for enhanced analysis and visualization. It integrates with the [Perspective library](https://perspective.finos.org/) to render data in various formats, including datagrids(pivot tables) and charts.
  *
- * Note: [Perspective](https://perspective.finos.org/) libraries are not bundled, so they must be included in the application's build process:
+ * Note: [Perspective](https://perspective-dev.github.io/) libraries are not bundled, so they must be included in the application's build process:
  *
- * ```typescript
- * npm i @finos/perspective @finos/perspective-viewer @finos/perspective-viewer-d3fc @finos/perspective-viewer-datagrid
+ * ```node
+ * npm i @perspective-dev/server @perspective-dev/client @perspective-dev/viewer @perspective-dev/viewer-d3fc @perspective-dev/viewer-datagrid
  * ```
  *
- * **Important**: You must call `initPerspective()` once at the root level of your application before using this component. Additionally, ensure your Webpack configuration supports WebAssembly (WASM) files by adding the following settings:
- * ```
- *   experiments: {
- *     asyncWebAssembly: true,
- *     syncWebAssembly: false,
- *  }
+ * * **Important**: You must call `initPerspective()` once at the root level of your application before using this component. Additionally, ensure your Webpack configuration supports WebAssembly (WASM) files by adding the following settings:
+ * ```javascript
+ *   // Reference - https://perspective-dev.github.io/guide/how_to/javascript/importing.html#webpack
+ *   {
+ *     // ...
+ *     module: {
+ *         // ...
+ *         rules: [
+ *             // ...
+ *             {
+ *                 test: /\.wasm$/,
+ *                 type: "asset/resource"
+ *             },
+ *         ]
+ *     },
+ *     experiments: {
+ *         // ...
+ *         asyncWebAssembly: false,
+ *         syncWebAssembly: false,
+ *     },
+ * }
  * ```
  */
 function PerspectiveViz(props: TableData) {
@@ -75,10 +91,12 @@ function PerspectiveViz(props: TableData) {
     return <Typography variant="body2">No data available.</Typography>
   }
 
+  const isLoadedRef = useRef<boolean>(false)
   const viewerRef = useRef<HTMLPerspectiveViewerElement | null>(null)
+  const depthRetryRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const rusticTheme = useTheme()
   const [hasError, setHasError] = useState<boolean>(false)
-  const [worker, setWorker] = useState<Client>(globalPerspectiveWorker)
+  const [worker, setWorker] = useState<Client>()
   const currentTheme = rusticTheme.palette.mode
   const perspectiveTheme = currentTheme === 'dark' ? 'Pro Dark' : 'Pro Light'
 
@@ -205,40 +223,26 @@ function PerspectiveViz(props: TableData) {
 
   useEffect(() => {
     setWorker(globalPerspectiveWorker)
-  }, [globalPerspectiveWorker])
+  }, [])
 
   const transformedConfig = props.config && transformTableConfig(props.config)
 
   useEffect(() => {
-    let table: Table | null = null
-    let viewInstance: View | null = null
     let isMounted = true
+    isLoadedRef.current = false
+    const viewer = viewerRef.current
 
     if (worker) {
-      const viewer = viewerRef.current
       worker
         .table(transformTableData(props.data, props.headers))
         .then((newTable) => {
-          table = newTable
-          if (!isMounted) {
-            if (table) {
-              table.delete({ lazy: true })
-              table = null
+          if (viewer) {
+            if (viewer.shadowRoot) {
+              const sheet = new CSSStyleSheet()
+              sheet.replaceSync(perspectiveVizAdditionalStyles)
+              viewer.shadowRoot.adoptedStyleSheets.push(sheet)
             }
-          } else {
-            if (viewer) {
-              if (viewer.shadowRoot) {
-                const sheet = new CSSStyleSheet()
-                sheet.replaceSync(perspectiveVizAdditionalStyles)
-                viewer.shadowRoot.adoptedStyleSheets.push(sheet)
-              }
 
-              return viewer.load(table)
-            }
-          }
-        })
-        .then(() => {
-          if (isMounted && viewer) {
             const dateColConfig = {
               date_format: {
                 dateStyle: props.config?.dateStyle || 'medium',
@@ -249,55 +253,101 @@ function PerspectiveViz(props: TableData) {
               // @ts-expect-error other fields are not needed for date formatting
               colConfigs[column_name] = dateColConfig
             })
-
-            return viewer.restore({
-              ...transformedConfig,
-              theme: perspectiveTheme,
-              title: props.title,
-              settings: false,
-              columns_config: colConfigs,
-            })
-          }
-        })
-        .then(() => {
-          if (isMounted && viewer) {
-            return viewer.getView()
-          }
-        })
-        .then((view) => {
-          if (!isMounted) {
-            if (view) {
-              view.delete()
-            }
-          } else {
-            viewInstance = view
-
-            const expansionDepth = props.config?.expansionDepth
-            if (typeof expansionDepth === 'number' && viewInstance) {
-              return viewInstance.set_depth(expansionDepth).then(() => {
-                if (viewerRef.current) {
-                  viewerRef.current.resize()
+            viewer
+              .load(newTable)
+              .then(() => {
+                if (!isMounted) {
+                  return
                 }
+                isLoadedRef.current = true
+
+                return viewer
+                  .restore({
+                    ...transformedConfig,
+                    theme: perspectiveTheme,
+                    title: props.title,
+                    settings: false,
+                    columns_config: colConfigs,
+                  } as ViewerConfigUpdate)
+                  .then(() => {
+                    if (!isMounted) {
+                      return
+                    }
+                    const expansionDepth = props.config?.expansionDepth
+                    if (typeof expansionDepth === 'number') {
+                      const trySetDepth = () => {
+                        if (!isMounted) {
+                          if (depthRetryRef.current) {
+                            clearInterval(depthRetryRef.current)
+                          }
+                          return
+                        }
+                        viewer
+                          .getView()
+                          .then((view: View) => {
+                            if (!isMounted || !view) {
+                              return
+                            }
+                            if (depthRetryRef.current) {
+                              clearInterval(depthRetryRef.current)
+                              depthRetryRef.current = null
+                            }
+                            view.set_depth(expansionDepth).then(() => {
+                              viewer.resize()
+                            })
+                          })
+                          .catch(() => {
+                            // getView failed due to a race condition, will retry
+                          })
+                      }
+                      trySetDepth()
+                      // eslint-disable-next-line
+                      depthRetryRef.current = setInterval(trySetDepth, 1000)
+                    }
+                  })
               })
-            }
+              .catch(() => {
+                setHasError(true)
+              })
           }
-        })
-        .catch(() => {
-          setHasError(true)
         })
     }
 
     return () => {
       isMounted = false
-
-      if (viewInstance) {
-        viewInstance.delete()
+      if (depthRetryRef.current) {
+        clearInterval(depthRetryRef.current)
+        depthRetryRef.current = null
       }
-      if (table) {
-        table.delete({ lazy: true })
+      if (isLoadedRef.current && viewer && typeof viewer.eject === 'function') {
+        viewer
+          .eject()
+          .then(() => (isLoadedRef.current = false))
+          .catch(() => {})
       }
+      isLoadedRef.current = false
     }
   }, [worker, props.data, perspectiveTheme, props.config])
+
+  useEffect(() => {
+    const handler = (event: PromiseRejectionEvent) => {
+      if (event.reason?.message === 'No `Table` attached') {
+        event.preventDefault()
+      }
+    }
+    window.addEventListener('unhandledrejection', handler)
+    return () => {
+      window.removeEventListener('unhandledrejection', handler)
+      const viewer = viewerRef.current
+      if (
+        isLoadedRef.current &&
+        viewer &&
+        typeof viewer.delete === 'function'
+      ) {
+        viewer.delete().catch(() => {})
+      }
+    }
+  }, [])
 
   if (hasError) {
     return (

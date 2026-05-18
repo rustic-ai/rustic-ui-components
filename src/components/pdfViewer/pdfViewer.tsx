@@ -96,6 +96,7 @@ function PDFViewer(props: PDFViewerProps) {
       const transform = [devicePixelRatio, 0, 0, devicePixelRatio, 0, 0]
 
       const renderContext = {
+        canvas: canvas,
         canvasContext: context,
         viewport,
         transform,

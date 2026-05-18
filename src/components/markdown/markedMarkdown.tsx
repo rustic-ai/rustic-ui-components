@@ -43,12 +43,12 @@ const MarkedMarkdown = (props: TextData) => {
       const lastMsg = props.updatedData.at(-1)
       if (
         props.updatedData.length > 1 &&
-        lastMsg?.updateType === UpdateType.Replace
+        props.updateType === UpdateType.Replace
       ) {
-        newContent = getValidatedText(lastMsg.text)
+        newContent = getValidatedText(lastMsg?.text)
       } else {
         for (const data of props.updatedData) {
-          const updateType = data.updateType || UpdateType.Append
+          const updateType = props.updateType || UpdateType.Append
           const updatedText = getValidatedText(data.text)
           if (updateType === UpdateType.Append) {
             newContent += updatedText

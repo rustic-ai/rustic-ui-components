@@ -1,12 +1,11 @@
-import type { Client } from '@finos/perspective'
-import perspective from '@finos/perspective'
+import perspective, { type Client } from '@perspective-dev/client'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import * as SERVER_WASM from '@finos/perspective/dist/wasm/perspective-server.wasm'
-import perspective_viewer from '@finos/perspective-viewer'
+import SERVER_WASM from '@perspective-dev/server/dist/wasm/perspective-server.wasm'
+import perspective_viewer from '@perspective-dev/viewer'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import * as CLIENT_WASM from '@finos/perspective-viewer/dist/wasm/perspective-viewer.wasm'
+import CLIENT_WASM from '@perspective-dev/viewer/dist/wasm/perspective-viewer.wasm'
 
 let initPromise: Promise<void>
 export let globalPerspectiveWorker: Client
@@ -17,7 +16,7 @@ export function initPerspective() {
   }
 
   initPromise = Promise.all([
-    perspective.init_server(SERVER_WASM),
+    perspective.init_server(SERVER_WASM as any),
     perspective_viewer.init_client(CLIENT_WASM as any),
   ])
     .then(() => perspective.worker())

@@ -70,13 +70,13 @@ export interface DataFormat {
   title?: string
   /** Optional description. */
   description?: string
+}
+
+export interface Updates<T extends DataFormat> {
   /** Optional updateId */
   updateId?: string
   /** Optional updateType */
   updateType?: UpdateType
-}
-
-export interface Updates<T extends DataFormat> {
   /** @ignore */
   updatedData?: T[]
 }
