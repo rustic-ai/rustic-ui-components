@@ -1,0 +1,11 @@
+.rustic-question-field .rustic-options-container {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+
+.rustic-option {
+  flex: 1;
+  min-width: fit-content;
+}
