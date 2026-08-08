@@ -89,7 +89,7 @@
     "eslint-plugin-unused-imports": "4.4.1",
     "husky": "9.1.7",
     "lint-staged": "16.4.0",
-    "mermaid": "11.15.0",
+    "mermaid": "11.16.1",
     "mini-css-extract-plugin": "2.10.2",
     "mock-socket": "9.3.1",
     "ol": "10.9.0",
