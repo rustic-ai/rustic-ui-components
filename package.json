@@ -31,7 +31,7 @@
     "@mui/styled-engine-sc": "^6.4.9",
     "@mui/system": "^6.5.0",
     "axios": "^1.16.1",
-    "dompurify": "3.4.2",
+    "dompurify": "3.4.13",
     "marked": "18.0.3",
     "react": "^18.3.1"
   },
