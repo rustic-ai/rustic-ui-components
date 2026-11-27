@@ -19,7 +19,8 @@ const compat = new FlatCompat({
 });
 
 export default [{
-    ignores: ['**/jest.config.js', '**/webpack.config.js', '**/webpack.prod.config.js'],
+    // src/vendor holds third-party code kept close to upstream; see its README.
+    ignores: ['**/jest.config.js', '**/webpack.config.js', '**/webpack.prod.config.js', 'src/vendor/**'],
 }, ...compat.extends(
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',

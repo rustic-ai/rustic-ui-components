@@ -109,14 +109,14 @@ export default function Weather(props: WeatherProps) {
           },
         ]}
       />
-      <Stack alignItems="center">
+      <Stack sx={{ alignItems: 'center' }}>
         <Typography variant="h4" component="span" data-cy="location">
           {props.location}
         </Typography>
         <Stack
           direction="row"
-          alignItems="center"
           spacing={1}
+          sx={{ alignItems: 'center' }}
           className="rustic-current-weather-description"
           data-cy="current-weather-description"
         >
@@ -146,10 +146,9 @@ export default function Weather(props: WeatherProps) {
 
       {props.weatherProvider && (
         <Stack
-          alignItems="center"
           direction="row"
           spacing={1}
-          alignSelf="center"
+          sx={{ alignItems: 'center', alignSelf: 'center' }}
           className="rustic-weather-attribution"
         >
           <Icon name="cloud" />

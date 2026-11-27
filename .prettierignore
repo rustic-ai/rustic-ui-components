@@ -5,3 +5,6 @@ CODEOWNERS
 
 .gitignore
 .prettierignore
+
+# Vendored third-party code, kept close to upstream:
+src/vendor

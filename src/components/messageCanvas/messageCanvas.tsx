@@ -52,8 +52,8 @@ function MessageCanvasElement(
     >
       <Stack
         direction="row"
-        alignItems="center"
         spacing={1}
+        sx={{ alignItems: 'center' }}
         className="rustic-header"
       >
         {props.getProfileComponent && props.getProfileComponent(messageInfo)}

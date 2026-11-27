@@ -191,7 +191,10 @@ describe('Video', () => {
 
       const sliderAnimationWait = 1000
       cy.wait(sliderAnimationWait)
-      cy.get(volumeSlider).type('{leftArrow}')
+      // MUI 9's Slider focuses its thumb input a frame after mousedown, so
+      // cy.type() on the root sees the track; focus the input and press a key.
+      cy.get(volumeSlider).find('input[type=range]').focus()
+      cy.realPress('ArrowLeft')
       cy.get(videoElement).its('0.volume').should('be.lessThan', 1)
     })
     it(`should change the time when the video progress slider is adjusted`, () => {

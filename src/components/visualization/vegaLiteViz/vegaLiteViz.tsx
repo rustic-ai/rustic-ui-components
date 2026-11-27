@@ -341,7 +341,7 @@ function VegaLiteViz({
   } else {
     return (
       <Stack direction="column" className="rustic-vega-lite-container">
-        <Box justifyContent="end" display="flex">
+        <Box sx={{ display: 'flex', justifyContent: 'end' }}>
           <PopoverMenu menuItems={menuItems} ariaLabel="Download options" />
         </Box>
 
@@ -363,7 +363,7 @@ function VegaLiteViz({
             }
           />
         )}
-        <Box textAlign="center" mt={1}>
+        <Box sx={{ textAlign: 'center', mt: 1 }}>
           {typeof props.spec.title === 'string' && (
             <Typography variant="subtitle2">{props.spec.title}</Typography>
           )}
