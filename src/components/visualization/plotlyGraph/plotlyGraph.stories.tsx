@@ -24,7 +24,7 @@ meta.argTypes = {
       },
       defaultValue: {
         summary:
-          "{config:{displaylogo: false,responsive: true,editable: false}, className: 'rustic-plotly'}",
+          "{config:{displaylogo: false,responsive: true,editable: false,showSendToCloud: false}, className: 'rustic-plotly'}",
       },
     },
   },
