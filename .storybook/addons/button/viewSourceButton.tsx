@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react'
+// Storybook builds manager addons with the classic JSX runtime, so React must
+// be in scope here even though the library uses react-jsx.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-imports
+import React, { useEffect, useState } from 'react'
 import { Button } from 'storybook/internal/components'
 import type { API_LeafEntry } from 'storybook/internal/types'
 import { addons, type API, types } from 'storybook/manager-api'
