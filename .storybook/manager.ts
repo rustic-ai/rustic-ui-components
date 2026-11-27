@@ -1,6 +1,6 @@
-import './addons/button/logo.tsx'
-import './addons/button/viewSourceButton.tsx'
-import './addons/button/githubButton.tsx'
+import './addons/button/logo'
+import './addons/button/viewSourceButton'
+import './addons/button/githubButton'
 
 import { addons } from 'storybook/manager-api'
 

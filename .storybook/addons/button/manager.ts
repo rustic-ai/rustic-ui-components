@@ -1,2 +1,2 @@
-import './viewSourceButton.tsx'
-import './githubButton.tsx'
+import './viewSourceButton'
+import './githubButton'

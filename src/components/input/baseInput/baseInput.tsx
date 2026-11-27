@@ -36,7 +36,8 @@ type SuggestionMenuProps = {
 }
 const defaultMaxRows = 6
 const defaultMaxEmojiSearchResults = 5
-const speechRecognitionErrors = {
+// Keyed by string: browsers differ in which error codes they send.
+const speechRecognitionErrors: Record<string, string> = {
   'no-speech':
     'No speech detected. Check your microphone volume and try again.',
   aborted:
