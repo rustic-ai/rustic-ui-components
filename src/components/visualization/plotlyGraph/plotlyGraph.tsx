@@ -20,6 +20,9 @@ import type { PlotlyGraphData } from './plotlyGraph.types'
 // its factory with a fully specified bundle path instead.
 const Plot = createPlotlyComponent(Plotly)
 
+// Plotly's own default chart height, in pixels.
+const DEFAULT_PLOT_HEIGHT = 450
+
 function PlotlyGraph(props: PlotlyGraphData) {
   const additionalConfig = {
     displaylogo: false,
@@ -30,7 +33,22 @@ function PlotlyGraph(props: PlotlyGraphData) {
     showSendToCloud: false,
   }
 
-  const plotParams = { ...props.plotParams, className: 'rustic-plotly' }
+  const plotParams = {
+    ...props.plotParams,
+    className: 'rustic-plotly',
+    // An explicit layout.width still wins over autosize.
+    layout: { autosize: true, ...props.plotParams.layout },
+    // responsive: true makes Plotly follow this div's size. react-plotly's
+    // default inline-block div only grows with the chart, so Plotly fell back
+    // to its 700px width and the chart never fit a narrow message column.
+    // Plotly also sizes the chart to 100% of the div's height after a resize,
+    // so the div needs a height or the chart collapses to nothing.
+    style: {
+      width: '100%',
+      height: props.plotParams.layout?.height ?? DEFAULT_PLOT_HEIGHT,
+      ...props.plotParams.style,
+    },
+  }
   plotParams.config = { ...plotParams.config, ...additionalConfig }
 
   return (
