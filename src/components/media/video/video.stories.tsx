@@ -1,4 +1,4 @@
-import type { StoryFn } from '@storybook/react-webpack5'
+import type { ComponentType } from 'react'
 import React from 'react'
 
 import Video from './video'
@@ -11,7 +11,7 @@ export default {
     layout: 'centered',
   },
   decorators: [
-    (Story: StoryFn) => {
+    (Story: ComponentType) => {
       return (
         <div style={{ maxWidth: '750px' }}>
           <Story />
@@ -45,7 +45,7 @@ export const WithCaptions = {
     captions: 'audioExamples/captions.vtt',
   },
   decorators: [
-    (Story: StoryFn) => {
+    (Story: ComponentType) => {
       return (
         <div style={{ maxWidth: '500px' }}>
           <Story />

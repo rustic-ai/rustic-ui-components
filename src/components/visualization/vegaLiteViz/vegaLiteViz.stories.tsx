@@ -1,5 +1,6 @@
 /* eslint-disable no-magic-numbers */
 import type { Meta, StoryFn } from '@storybook/react-webpack5'
+import type { ComponentType } from 'react'
 import React, { useEffect, useRef, useState } from 'react'
 
 import { UpdateType } from '../../types'
@@ -36,7 +37,7 @@ meta.argTypes = {
 }
 
 const decorators = [
-  (Story: StoryFn) => {
+  (Story: ComponentType) => {
     return (
       <div
         style={{
@@ -474,7 +475,7 @@ export const GlobeVisualization = {
     },
   },
   decorators: [
-    (Story: StoryFn) => {
+    (Story: ComponentType) => {
       return (
         <div
           style={{

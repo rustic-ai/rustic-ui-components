@@ -61,7 +61,7 @@ export default function MessageArchive({
 }: MessageArchiveProps) {
   const scrollEndRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout>(undefined)
 
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true)
   const [isScrollButtonHidden, setIsScrollButtonHidden] =

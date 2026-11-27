@@ -39,8 +39,8 @@ function List({
       >
         {value?.map((item, itemIndex) =>
           Children.map(children, (child, childIndex) =>
-            isValidElement(child)
-              ? cloneElement(child as ReactElement, {
+            isValidElement<{ name?: string }>(child)
+              ? cloneElement(child as ReactElement<any>, {
                   key: `${itemIndex}-${childIndex}`,
                   name: child.props.name?.replace('$', '' + itemIndex),
                   ...itemProps,

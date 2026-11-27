@@ -1,6 +1,6 @@
 import Typography from '@mui/material/Typography'
 import type { Meta } from '@storybook/react-webpack5'
-import type { StoryFn } from '@storybook/react-webpack5'
+import type { ComponentType } from 'react'
 import React from 'react'
 import { v4 as getUUID } from 'uuid'
 
@@ -28,7 +28,7 @@ const meta: Meta<React.ComponentProps<typeof MessageSpace>> = {
   component: MessageSpace,
   tags: ['autodocs'],
   decorators: [
-    (Story: StoryFn) => {
+    (Story: ComponentType) => {
       return (
         <div
           style={{ height: '500px', display: 'flex', flexDirection: 'column' }}

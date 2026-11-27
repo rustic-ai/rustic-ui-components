@@ -1,7 +1,7 @@
 /* eslint-disable no-magic-numbers */
-
 import Button from '@mui/material/Button'
-import type { Meta, StoryFn } from '@storybook/react-webpack5'
+import type { Meta } from '@storybook/react-webpack5'
+import type { ComponentType } from 'react'
 import React, { useState } from 'react'
 
 import { participantDetail } from '../sharedDescription'
@@ -18,7 +18,7 @@ const meta: Meta<React.ComponentProps<typeof ParticipantsContainer>> = {
     layout: 'centered',
   },
   decorators: [
-    (Story: StoryFn) => {
+    (Story: ComponentType<{ args?: Record<string, unknown> }>) => {
       const [isModalOpen, setIsModalOpen] = useState(false)
 
       const openModal = () => setIsModalOpen(true)

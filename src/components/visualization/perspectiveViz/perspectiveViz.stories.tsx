@@ -1,5 +1,6 @@
 /* eslint-disable no-magic-numbers */
-import type { Meta, StoryFn } from '@storybook/react-webpack5'
+import type { Meta } from '@storybook/react-webpack5'
+import type { ComponentType } from 'react'
 import React from 'react'
 
 import { initPerspective } from './perspectiveInit'
@@ -172,7 +173,7 @@ function generateFakeData(numEntries: number) {
 }
 
 const decorators = [
-  (Story: StoryFn) => {
+  (Story: ComponentType) => {
     return (
       <div
         style={{

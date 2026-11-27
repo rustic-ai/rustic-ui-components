@@ -21,6 +21,8 @@ don't depend on MUI.
   `utils.ts`, so the copy adds no runtime dependencies.
 - Type-only imports and exports are marked `type`, as this project's
   `verbatimModuleSyntax` setting requires.
+- `ListField` narrows `isValidElement` to `{ name?: string }` props, since
+  React 19's types make an element's props `unknown` by default.
 
 The code otherwise keeps upstream's formatting so it can be diffed against
 future uniforms releases, which is why this folder is excluded from ESLint and

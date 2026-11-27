@@ -65,7 +65,7 @@ export default function MessageSpace({
 }: MessageSpaceProps) {
   const scrollEndRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout>(undefined)
 
   //set default value as true to avoid showing scroll down button when there's no message in the message space
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true)

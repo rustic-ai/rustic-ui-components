@@ -1,4 +1,5 @@
-import type { Meta, StoryFn } from '@storybook/react-webpack5'
+import type { Meta } from '@storybook/react-webpack5'
+import type { ComponentType } from 'react'
 import React from 'react'
 
 import MermaidViz from './mermaidViz'
@@ -11,7 +12,7 @@ const meta: Meta<React.ComponentProps<typeof MermaidViz>> = {
     layout: 'centered',
   },
   decorators: [
-    (Story: StoryFn) => {
+    (Story: ComponentType) => {
       return (
         <div
           style={{

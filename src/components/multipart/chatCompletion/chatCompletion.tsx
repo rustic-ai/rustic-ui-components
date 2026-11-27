@@ -26,7 +26,7 @@ function getFileName(fileUrl: string): string {
 
 export default function ChatCompletion(props: ChatCompletionProps) {
   function renderContentArray(contentArray: Content[], index: number) {
-    const files: Array<JSX.Element> = []
+    const files: Array<React.JSX.Element> = []
     let textContent: string = ''
     contentArray.map((cnt) => {
       // To-do: handle other types e.g. input_audio

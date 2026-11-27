@@ -1,4 +1,5 @@
-import type { Meta, StoryFn } from '@storybook/react-webpack5'
+import type { Meta } from '@storybook/react-webpack5'
+import type { ComponentType } from 'react'
 import React from 'react'
 
 import Image from './image'
@@ -56,7 +57,7 @@ export const InsideSmallerParentContainer = {
     src: 'images/image-component-example.png',
   },
   decorators: [
-    (Story: StoryFn) => {
+    (Story: ComponentType) => {
       return (
         <div style={{ width: '200px' }}>
           <Story />

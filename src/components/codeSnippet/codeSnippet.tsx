@@ -20,7 +20,7 @@ import type { CodeData } from '../types'
 * ``` */
 export default function CodeSnippet(props: CodeData) {
   const codeSnippetContainer = useRef<HTMLDivElement>(null)
-  const editorView = useRef<EditorView>()
+  const editorView = useRef<EditorView>(undefined)
   const langCompartment = new Compartment()
 
   const minimalExtensions = [

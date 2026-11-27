@@ -434,9 +434,9 @@ function Uploader(props: UploaderProps) {
   )
 
   function renderContentWithRef(
-    content: JSX.Element,
+    content: React.JSX.Element,
     domNode?: HTMLDivElement | null
-  ): JSX.Element {
+  ): React.JSX.Element {
     if (domNode) {
       return createPortal(content, domNode)
     } else {
