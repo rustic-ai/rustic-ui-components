@@ -48,11 +48,11 @@
     "@fullcalendar/react": "7.1.5",
     "@mui/material": "9.6.0",
     "@mui/system": "9.6.0",
-    "@perspective-dev/client": "4.4.1",
-    "@perspective-dev/server": "4.4.1",
-    "@perspective-dev/viewer": "4.4.1",
-    "@perspective-dev/viewer-d3fc": "4.4.1",
-    "@perspective-dev/viewer-datagrid": "4.4.1",
+    "@perspective-dev/client": "5.10.0",
+    "@perspective-dev/server": "5.10.0",
+    "@perspective-dev/viewer": "5.10.0",
+    "@perspective-dev/viewer-charts": "5.10.0",
+    "@perspective-dev/viewer-datagrid": "5.10.0",
     "@storybook/addon-docs": "10.6.9",
     "@storybook/addon-links": "10.6.9",
     "@storybook/addon-webpack5-compiler-swc": "4.0.6",
@@ -118,11 +118,10 @@
     "@fullcalendar/react": "^7.1.5",
     "@mui/material": "^9.6.0",
     "@mui/system": "^9.6.0",
-    "@perspective-dev/client": "^4.4.1",
-    "@perspective-dev/server": "^4.4.1",
-    "@perspective-dev/viewer": "^4.4.1",
-    "@perspective-dev/viewer-d3fc": "^4.4.1",
-    "@perspective-dev/viewer-datagrid": "^4.4.1",
+    "@perspective-dev/client": "^5.10.0",
+    "@perspective-dev/server": "^5.10.0",
+    "@perspective-dev/viewer": "^5.10.0",
+    "@perspective-dev/viewer-datagrid": "^5.10.0",
     "@types/react": "^18.3.28 || ^19.0.0",
     "@types/react-dom": "^18.3.7 || ^19.0.0",
     "axios": "^1.16.0",
@@ -136,11 +135,12 @@
     "react": "^18.3.1 || ^19.0.0",
     "react-dom": "^18.3.1 || ^19.0.0",
     "react-plotly.js": "^2.6.0",
+    "temporal-polyfill": "^1.0.7",
     "uniforms": "^4.0.0",
     "uniforms-bridge-json-schema": "^4.0.0",
     "uuid": "^14.0.0",
     "vega-embed": "^7.1.0",
-    "temporal-polyfill": "^1.0.7"
+    "@perspective-dev/viewer-charts": "^5.10.0"
   },
   "peerDependenciesMeta": {
     "@codemirror/language": {
@@ -165,9 +165,6 @@
       "optional": true
     },
     "@perspective-dev/viewer": {
-      "optional": true
-    },
-    "@perspective-dev/viewer-d3fc": {
       "optional": true
     },
     "@perspective-dev/viewer-datagrid": {
@@ -219,6 +216,9 @@
       "optional": true
     },
     "temporal-polyfill": {
+      "optional": true
+    },
+    "@perspective-dev/viewer-charts": {
       "optional": true
     }
   },
