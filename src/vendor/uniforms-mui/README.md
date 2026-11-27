@@ -7,6 +7,9 @@ This is a copy of [`uniforms-mui`](https://github.com/vazco/uniforms/tree/master
 `uniforms` and `uniforms-bridge-json-schema` stay regular npm packages; they
 don't depend on MUI.
 
+Apps can use it in place of `uniforms-mui`; `@rustic-ai/ui-components/dynamicForm`
+re-exports everything in `index.ts` (`AutoForm`, `AutoField`, `SubmitField`, ...).
+
 ## Changes from upstream 4.0.0
 
 - `TextField`, `LongTextField`, `NumField`, `DateField` and `SelectField` pass
