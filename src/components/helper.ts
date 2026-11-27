@@ -54,7 +54,7 @@ export function formatTimestamp(
 ): string {
   const date = new Date(timestampInMillis)
 
-  let options = {}
+  let options: Intl.DateTimeFormatOptions
   const userLocale = navigator.language
 
   if (format === TimeFormat.HOUR) {

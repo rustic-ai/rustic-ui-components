@@ -56,7 +56,7 @@ export default function Table(props: TableData) {
   function handleSortRequest(dataKey: string) {
     setSortingCriteria((prevCriteria) => {
       const currentOrder = prevCriteria[dataKey]
-      let newSortingCriteria = {}
+      let newSortingCriteria: SortingCriteria
 
       switch (currentOrder) {
         case Order.Ascending:
