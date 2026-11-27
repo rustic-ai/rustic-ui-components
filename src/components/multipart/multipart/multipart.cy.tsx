@@ -1,4 +1,3 @@
-import React from 'react'
 
 import { supportedViewports } from '../../../../cypress/support/variables'
 import { setPdfWorkerSrc } from '../../pdfViewer/pdfViewer'

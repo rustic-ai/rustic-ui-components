@@ -12,8 +12,9 @@ import { useTheme } from '@mui/material/styles'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { Box } from '@mui/system'
+import type React from 'react';
 import type { ReactNode } from 'react'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import Icon from '../icon/icon'
 

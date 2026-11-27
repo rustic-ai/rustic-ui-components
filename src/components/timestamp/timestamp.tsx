@@ -1,5 +1,4 @@
 import Typography from '@mui/material/Typography'
-import React from 'react'
 
 import { formatDateAndTime } from '../helper'
 

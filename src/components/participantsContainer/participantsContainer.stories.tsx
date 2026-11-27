@@ -1,8 +1,9 @@
 /* eslint-disable no-magic-numbers */
 import Button from '@mui/material/Button'
 import type { Meta } from '@storybook/react-webpack5'
+import type React from 'react';
 import type { ComponentType } from 'react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { participantDetail } from '../sharedDescription'
 import { ParticipantRole, ParticipantType } from '../types'

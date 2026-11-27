@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from 'storybook/internal/components'
 import type { API_LeafEntry } from 'storybook/internal/types'
 import { addons, type API, types } from 'storybook/manager-api'

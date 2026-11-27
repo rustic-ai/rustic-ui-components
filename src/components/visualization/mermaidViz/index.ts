@@ -2,5 +2,5 @@ import './mermaidViz.css'
 
 import MermaidViz from './mermaidViz'
 
-export * from './mermaidViz.types'
+export type * from './mermaidViz.types'
 export default MermaidViz

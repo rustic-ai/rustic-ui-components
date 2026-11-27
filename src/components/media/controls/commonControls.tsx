@@ -7,7 +7,8 @@ import LinearProgress from '@mui/material/LinearProgress'
 import Slider from '@mui/material/Slider'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import React, { useState } from 'react'
+import type React from 'react';
+import { useState } from 'react'
 
 import { formatDurationTime } from '../../helper'
 import Icon from '../../icon/icon'

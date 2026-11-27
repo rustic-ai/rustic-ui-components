@@ -3,7 +3,6 @@ import './transcript.css'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import { Box } from '@mui/system'
-import React from 'react'
 
 interface TranscriptProps {
   transcript: string

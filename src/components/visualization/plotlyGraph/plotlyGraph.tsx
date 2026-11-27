@@ -1,6 +1,5 @@
 import Typography from '@mui/material/Typography'
 import Box from '@mui/system/Box'
-import React from 'react'
 import Plot from 'react-plotly.js'
 
 import MarkedMarkdown from '../../markdown/markedMarkdown'

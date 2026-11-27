@@ -5,7 +5,7 @@ import Alert from '@mui/material/Alert'
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import { Box } from '@mui/system'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import MarkedMarkdown from '../../markdown/markedMarkdown'
 import type { AudioFormat } from '../../types'

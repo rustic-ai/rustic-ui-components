@@ -4,7 +4,7 @@ import Alert from '@mui/material/Alert'
 import Chip from '@mui/material/Chip'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/system/Box'
-import React, { type ReactNode, useEffect, useRef, useState } from 'react'
+import { type ReactNode, useEffect, useRef, useState } from 'react'
 
 import ElementRenderer from '../elementRenderer/elementRenderer'
 import { getCombinedMessages } from '../helper'

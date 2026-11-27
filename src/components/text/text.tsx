@@ -3,7 +3,7 @@ import './text.css'
 import Alert from '@mui/material/Alert'
 import Typography from '@mui/material/Typography'
 import DOMPurify from 'dompurify'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { type TextData, UpdateType } from '../types'
 

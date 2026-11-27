@@ -2,8 +2,8 @@ import './action.css'
 
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
+import type React from 'react'
 import type { ReactNode } from 'react'
-import React from 'react'
 
 import type { Message } from '../../types'
 

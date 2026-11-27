@@ -13,7 +13,7 @@ import type {
   HTMLPerspectiveViewerElement,
   ViewerConfigUpdate,
 } from '@perspective-dev/viewer'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import MarkedMarkdown from '../../markdown/markedMarkdown'
 import type {

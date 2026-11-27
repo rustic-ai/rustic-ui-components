@@ -5,7 +5,6 @@ import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
-import React from 'react'
 import { useEffect, useState } from 'react'
 
 import { getLatestValue } from '../helper'

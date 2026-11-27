@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography'
 import type { Meta } from '@storybook/react-webpack5'
+import type React from 'react'
 import type { ComponentType } from 'react'
-import React from 'react'
 import { v4 as getUUID } from 'uuid'
 
 import {

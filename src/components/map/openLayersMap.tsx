@@ -10,7 +10,6 @@ import Overlay from 'ol/Overlay.js'
 import { fromLonLat } from 'ol/proj.js'
 import OSM from 'ol/source/OSM.js'
 import View from 'ol/View.js'
-import React from 'react'
 import { useEffect, useRef, useState } from 'react'
 
 import Icon from '../icon/icon'

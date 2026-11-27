@@ -6,7 +6,7 @@ import { Compartment, EditorState } from '@codemirror/state'
 import { EditorView, highlightSpecialChars } from '@codemirror/view'
 import Typography from '@mui/material/Typography'
 import { Box } from '@mui/system'
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import MarkedMarkdown from '../markdown/markedMarkdown'
 import type { CodeData } from '../types'

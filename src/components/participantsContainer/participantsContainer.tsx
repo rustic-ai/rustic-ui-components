@@ -13,7 +13,6 @@ import Typography from '@mui/material/Typography'
 import { Box } from '@mui/system'
 import pluralize from 'pluralize'
 import type { ReactNode } from 'react'
-import React from 'react'
 import { useState } from 'react'
 
 import { capitalizeFirstLetter } from '../helper'

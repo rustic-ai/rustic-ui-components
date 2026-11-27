@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React from 'react'
+import type React from 'react'
 
 import { supportedViewports } from '../../../cypress/support/variables'
 import Icon from '../icon/icon'

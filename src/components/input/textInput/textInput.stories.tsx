@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/react-webpack5'
+import type React from 'react'
 import type { ComponentType } from 'react'
-import React from 'react'
 
 import { textInputDescription } from '../../sharedDescription'
 import type { BaseInputProps, WebSocketClient } from '../../types'

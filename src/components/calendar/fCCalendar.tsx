@@ -7,7 +7,6 @@ import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import React from 'react'
 
 import MarkedMarkdown from '../markdown/markedMarkdown'
 import type { CalendarData, CalendarEvent } from '../types'

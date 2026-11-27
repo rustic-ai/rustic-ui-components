@@ -5,7 +5,7 @@ import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import useTheme from '@mui/system/useTheme'
 import mermaid from 'mermaid'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { v4 as getUUID } from 'uuid'
 
 import MarkedMarkdown from '../../markdown/markedMarkdown'

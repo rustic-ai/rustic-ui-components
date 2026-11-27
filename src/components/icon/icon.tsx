@@ -1,6 +1,5 @@
 import './icon.css'
 
-import React from 'react'
 
 export type IconProps = {
     name: string

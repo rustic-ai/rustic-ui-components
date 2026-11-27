@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Ajv, { type JSONSchemaType } from 'ajv'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { JSONSchemaBridge } from 'uniforms-bridge-json-schema'
 import { v4 as getUUID } from 'uuid'
 

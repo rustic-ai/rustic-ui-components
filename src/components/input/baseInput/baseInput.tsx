@@ -17,8 +17,8 @@ import type {
   Emoji as EmojiInfo,
   NativeEmoji,
 } from 'emoji-picker-element/shared'
+import type React from 'react'
 import { type ForwardedRef, forwardRef, useRef, useState } from 'react'
-import React from 'react'
 import { v4 as getUUID } from 'uuid'
 
 import Icon from '../../icon/icon'

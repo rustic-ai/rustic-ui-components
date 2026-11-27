@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import type { MediaControls } from './commonControls'
 import { MediaIconButton } from './mediaIconButton'

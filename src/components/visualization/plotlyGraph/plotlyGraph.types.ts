@@ -1,5 +1,6 @@
-import type {Updates, VisualizationFormat} from "../../types";
 import type {PlotParams} from "react-plotly.js";
+
+import type {Updates, VisualizationFormat} from "../../types";
 
 
 export type PlotlyJson = Omit<PlotParams, "divId">

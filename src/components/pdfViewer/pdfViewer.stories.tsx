@@ -1,5 +1,4 @@
 import type { ComponentType } from 'react'
-import React from 'react'
 
 import PDFViewer, { setPdfWorkerSrc } from './pdfViewer'
 

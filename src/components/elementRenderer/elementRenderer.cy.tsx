@@ -1,4 +1,3 @@
-import React from 'react'
 import { v4 as getUUID } from 'uuid'
 
 import {

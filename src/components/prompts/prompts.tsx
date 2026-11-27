@@ -3,7 +3,6 @@ import './prompts.css'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import useTheme from '@mui/system/useTheme'
-import React from 'react'
 import { v4 as getUUID } from 'uuid'
 
 import { toChatRequest } from '../helper'

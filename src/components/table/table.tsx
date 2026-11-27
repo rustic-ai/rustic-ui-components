@@ -12,7 +12,8 @@ import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import React, { useState } from 'react'
+import type React from 'react';
+import { useState } from 'react'
 
 import { capitalizeFirstLetter } from '../helper'
 import Icon from '../icon/icon'

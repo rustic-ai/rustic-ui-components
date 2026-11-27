@@ -1,6 +1,6 @@
 import Typography from '@mui/material/Typography'
 import type { Meta } from '@storybook/react-webpack5'
-import React from 'react'
+import type React from 'react'
 
 import Icon from '../icon/icon'
 import PopoverMenu from './popoverMenu'

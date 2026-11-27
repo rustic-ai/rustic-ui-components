@@ -2,7 +2,7 @@ import './messageSpace.css'
 
 import Chip from '@mui/material/Chip'
 import Box from '@mui/system/Box'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import ElementRenderer from '../elementRenderer/elementRenderer'
 import { getCombinedMessages } from '../helper'

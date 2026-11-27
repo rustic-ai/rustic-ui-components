@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import Icon from '../../../icon/icon'
 import type { Message } from '../../../types'

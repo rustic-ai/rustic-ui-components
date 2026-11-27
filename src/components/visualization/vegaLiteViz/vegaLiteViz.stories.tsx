@@ -1,7 +1,8 @@
 /* eslint-disable no-magic-numbers */
 import type { Meta, StoryFn } from '@storybook/react-webpack5'
+import type React from 'react';
 import type { ComponentType } from 'react'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { UpdateType } from '../../types'
 import VegaLiteViz from './vegaLiteViz'

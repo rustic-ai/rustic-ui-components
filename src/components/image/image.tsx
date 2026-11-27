@@ -4,7 +4,6 @@ import '../../index.css'
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import { useEffect, useState } from 'react'
-import React from 'react'
 
 import { getSizeStyles } from '../helper'
 import MarkedMarkdown from '../markdown/markedMarkdown'
