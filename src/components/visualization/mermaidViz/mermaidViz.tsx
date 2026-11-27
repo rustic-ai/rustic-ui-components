@@ -33,6 +33,10 @@ function MermaidViz(props: MermaidData) {
       mermaid.initialize({
         theme: mermaidTheme,
         themeVariables: { fontFamily: defaultFont },
+        // Mermaid 12 defaults to the ELK layout and a new look; keep the
+        // layout and look diagrams had before. `config` can still override.
+        layout: 'dagre',
+        look: 'classic',
         ...props.config,
       })
 
