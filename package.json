@@ -121,6 +121,7 @@
     "@perspective-dev/client": "^5.10.0",
     "@perspective-dev/server": "^5.10.0",
     "@perspective-dev/viewer": "^5.10.0",
+    "@perspective-dev/viewer-charts": "^5.10.0",
     "@perspective-dev/viewer-datagrid": "^5.10.0",
     "@types/react": "^18.3.28 || ^19.0.0",
     "@types/react-dom": "^18.3.7 || ^19.0.0",
@@ -130,17 +131,16 @@
     "mermaid": "^11.15.0 || ^12.0.0",
     "ol": "^10.9.0",
     "pdfjs-dist": ">=5.4.624 <5.6.83 || >=6.2.108",
-    "plotly.js": "^3.5.1",
+    "plotly.js": "^4.0.0",
     "pluralize": "^8.0.0",
     "react": "^18.3.1 || ^19.0.0",
     "react-dom": "^18.3.1 || ^19.0.0",
-    "react-plotly.js": "^2.6.0",
+    "react-plotly.js": "^4.0.0",
     "temporal-polyfill": "^1.0.7",
     "uniforms": "^4.0.0",
     "uniforms-bridge-json-schema": "^4.0.0",
     "uuid": "^14.0.0",
-    "vega-embed": "^7.1.0",
-    "@perspective-dev/viewer-charts": "^5.10.0"
+    "vega-embed": "^7.1.0"
   },
   "peerDependenciesMeta": {
     "@codemirror/language": {
