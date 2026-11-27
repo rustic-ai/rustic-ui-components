@@ -40,6 +40,11 @@ export function ProgressSlider(props: MediaControls) {
   const formattedElapsedTime = formatDurationTime(
     props.mediaElement.currentTime
   )
+  // duration is NaN until the media's metadata loads; passing that to the
+  // slider and progress bar makes React warn about NaN attributes.
+  const duration = Number.isFinite(props.mediaElement.duration)
+    ? props.mediaElement.duration
+    : 0
 
   function handleTimeChange(event: Event, newValue: number | number[]) {
     props.mediaElement.currentTime = newValue as number
@@ -61,7 +66,7 @@ export function ProgressSlider(props: MediaControls) {
     }
 
     const bufferedPercent =
-      (secondsBuffered / props.mediaElement.duration) * percentMultiple
+      duration > 0 ? (secondsBuffered / duration) * percentMultiple : 0
 
     return (
       <LinearProgress
@@ -89,7 +94,7 @@ export function ProgressSlider(props: MediaControls) {
         size="small"
         aria-label="Time"
         aria-valuetext={`Current time: ${formattedElapsedTime}`}
-        max={props.mediaElement.duration}
+        max={duration}
         value={props.mediaElement.currentTime}
         onChange={handleTimeChange}
         valueLabelDisplay="auto"

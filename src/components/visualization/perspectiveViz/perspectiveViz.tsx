@@ -253,7 +253,7 @@ function PerspectiveViz(props: TableData) {
         .table(transformTableData(props.data, props.headers), {
           name: tableName,
         })
-        .then((newTable) => {
+        .then(() => {
           if (viewer) {
             if (viewer.shadowRoot) {
               const sheet = new CSSStyleSheet()
@@ -270,8 +270,10 @@ function PerspectiveViz(props: TableData) {
             props.config?.dateColumns?.forEach((column_name) => {
               colConfigs[column_name] = dateColConfig
             })
+            // Perspective 5 loads the client and picks the table by name in
+            // restore(); load(table) is deprecated.
             viewer
-              .load(newTable)
+              .load(worker)
               .then(() => {
                 if (!isMounted) {
                   return
