@@ -5,7 +5,7 @@ import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { v4 as getUUID } from 'uuid'
 
 import MarkedMarkdown from '../markdown/markedMarkdown'

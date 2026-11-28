@@ -5,7 +5,7 @@ import Alert from '@mui/material/Alert'
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import { Box } from '@mui/system'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import MarkedMarkdown from '../../markdown/markedMarkdown'
 import type { VideoFormat } from '../../types'
@@ -289,10 +289,16 @@ export default function Video(props: VideoFormat) {
 
   const renderControls = isMobile ? renderMobileView : renderDesktopView
 
-  if (loadingErrorMessage.length > 0) {
+  // React 19 drops an empty src attribute, so the media element never fires
+  // the error event that used to report a missing source.
+  const errorMessage = props.src
+    ? loadingErrorMessage
+    : 'Failed to load the video.'
+
+  if (errorMessage.length > 0) {
     return (
       <Alert severity="error" data-cy="loading-error">
-        {loadingErrorMessage}
+        {errorMessage}
       </Alert>
     )
   }

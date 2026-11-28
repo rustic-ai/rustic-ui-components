@@ -9,7 +9,7 @@ import {
   Subtitle,
   Title,
 } from '@storybook/addon-docs/blocks'
-import type { StoryContext, StoryFn } from '@storybook/react-webpack5'
+import type { Decorator } from '@storybook/react-webpack5'
 import React from 'react'
 import { INITIAL_VIEWPORTS } from 'storybook/viewport'
 
@@ -29,7 +29,7 @@ export const globalTypes = {
   },
 }
 
-const withMuiTheme = (Story: StoryFn, context: StoryContext) => {
+const withMuiTheme: Decorator = (Story, context) => {
   const theme =
     context.globals.theme === 'light' ? rusticLightTheme : rusticDarkTheme
 

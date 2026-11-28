@@ -45,3 +45,41 @@ describe('PlotlyGraph', () => {
     })
   })
 })
+
+describe('PlotlyGraph sizing', () => {
+  it('fills its container and redraws when the container narrows', () => {
+    cy.viewport(1000, 800)
+    cy.mount(
+      <div data-cy="plotly-box" style={{ width: 600 }}>
+        <PlotlyGraph
+          plotParams={{
+            data: [{ values: [19, 26, 55], type: 'pie' }],
+            layout: {},
+          }}
+        />
+      </div>
+    )
+    cy.get('.main-svg').first().should('have.attr', 'width', '600')
+    cy.get('[data-cy=plotly-box]').invoke('css', 'width', '300px')
+    cy.get('.main-svg').first().should('have.attr', 'width', '300')
+    // Resizing must not collapse the chart's height.
+    cy.get('.main-svg').first().should('have.attr', 'height', '450')
+    cy.get('.rustic-plotly').should(($plot) => {
+      expect($plot[0].getBoundingClientRect().height).to.equal(450)
+    })
+  })
+
+  it('keeps an explicit layout width', () => {
+    cy.mount(
+      <div style={{ width: 600 }}>
+        <PlotlyGraph
+          plotParams={{
+            data: [{ values: [19, 26, 55], type: 'pie' }],
+            layout: { width: 400 },
+          }}
+        />
+      </div>
+    )
+    cy.get('.main-svg').first().should('have.attr', 'width', '400')
+  })
+})

@@ -5,7 +5,7 @@ import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import useTheme from '@mui/system/useTheme'
 import mermaid from 'mermaid'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { v4 as getUUID } from 'uuid'
 
 import MarkedMarkdown from '../../markdown/markedMarkdown'
@@ -33,6 +33,10 @@ function MermaidViz(props: MermaidData) {
       mermaid.initialize({
         theme: mermaidTheme,
         themeVariables: { fontFamily: defaultFont },
+        // Mermaid 12 defaults to the ELK layout and a new look; keep the
+        // layout and look diagrams had before. `config` can still override.
+        layout: 'dagre',
+        look: 'classic',
         ...props.config,
       })
 

@@ -3,7 +3,6 @@ import './multipart.css'
 
 import Typography from '@mui/material/Typography'
 import Box from '@mui/system/Box'
-import React from 'react'
 
 import FilePreview from '../../filePreview/filePreview'
 import MarkedMarkdown from '../../markdown'

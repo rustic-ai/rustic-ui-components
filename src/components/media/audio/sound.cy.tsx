@@ -29,6 +29,15 @@ describe('Sound', () => {
 
   supportedViewports.forEach((viewport) => {
     it(`renders the sound player component on ${viewport} screen`, () => {
+      // Hold the response back so the loading state lasts long enough to
+      // assert on; local test media otherwise loads before Cypress looks.
+      const delayedSrc = `${src}?delayed`
+      cy.intercept(delayedSrc, (req) => {
+        req.on('response', (res) => {
+          res.setDelay(1000)
+        })
+      })
+      cy.mount(<Sound src={delayedSrc} title="Sound Player Component" />)
       cy.get('[data-cy=audio]').should('be.visible')
       cy.get('[data-cy=spinner]').should('be.visible')
       cy.get('[data-cy=spinner]').should('not.exist')

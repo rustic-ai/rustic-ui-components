@@ -7,7 +7,7 @@ import { useTheme } from '@mui/material/styles'
 import Tooltip from '@mui/material/Tooltip'
 import type Picker from 'emoji-picker-element/picker'
 import type { EmojiClickEvent } from 'emoji-picker-element/shared'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import Icon from '../../icon/icon'
 

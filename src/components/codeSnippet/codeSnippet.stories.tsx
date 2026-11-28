@@ -1,5 +1,6 @@
-import type { Meta, StoryFn } from '@storybook/react-webpack5'
-import React from 'react'
+import type { Meta } from '@storybook/react-webpack5'
+import type React from 'react'
+import type { ComponentType } from 'react'
 
 import CodeSnippet from './codeSnippet'
 const meta: Meta<React.ComponentProps<typeof CodeSnippet>> = {
@@ -182,7 +183,7 @@ export const HTMLInsideAParentContainer = {
     language: 'HTML',
   },
   decorators: [
-    (Story: StoryFn) => {
+    (Story: ComponentType) => {
       return (
         <div style={{ maxWidth: '600px' }}>
           <Story />

@@ -1,5 +1,6 @@
-import type { Meta, StoryFn } from '@storybook/react-webpack5'
-import React from 'react'
+import type { Meta } from '@storybook/react-webpack5'
+import type React from 'react'
+import type { ComponentType } from 'react'
 
 import { optionalWsDescription, senderDescription } from '../sharedDescription'
 import Question from './question'
@@ -12,7 +13,7 @@ const meta: Meta<React.ComponentProps<typeof Question>> = {
     layout: 'centered',
   },
   decorators: [
-    (Story: StoryFn) => {
+    (Story: ComponentType) => {
       return (
         <div style={{ maxWidth: '400px' }}>
           <Story />

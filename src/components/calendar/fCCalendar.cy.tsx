@@ -1,6 +1,13 @@
 import { supportedViewports } from '../../../cypress/support/variables'
 import FCCalendar from './fCCalendar'
 
+// FullCalendar 7 measures its layout with ResizeObserver, which can report a
+// harmless "loop completed with undelivered notifications" error while
+// Cypress resizes the viewport. Ignore only that error, only in this spec.
+Cypress.on('uncaught:exception', (error) =>
+  error.message.includes('ResizeObserver loop') ? false : undefined
+)
+
 describe('ScheduleCalendar Component', () => {
   const mockEvents = [
     {
@@ -35,9 +42,11 @@ describe('ScheduleCalendar Component', () => {
     },
   ]
 
-  const eventTitle = '*[class^="fc-event-title"]'
-  const prevButton = '*[class^="fc-prev-button"]'
-  const nextButton = '*[class^="fc-next-button"]'
+  // FullCalendar 7 renders hashed class names, so find the arrows by their
+  // accessible labels ("Previous Week", "Next Month", ...).
+  const eventTitle = '.rustic-fc-event-title'
+  const prevButton = 'button[aria-label^="Previous"]'
+  const nextButton = 'button[aria-label^="Next"]'
   const initialDate = '7 Wednesday' // first event
   const initialWeek = '4 Sun' // week of first event
   const initialMonth = 'February 2024' // month of first event
@@ -49,16 +58,18 @@ describe('ScheduleCalendar Component', () => {
   supportedViewports.forEach((viewport) => {
     it(`allows the user to navigate to the next and previous week on ${viewport} screen`, () => {
       cy.viewport(viewport)
-      cy.get('button').contains('week').click()
+      cy.get('button').contains('Week').click()
+      // On narrow screens FullCalendar 7 shortens week headers to one letter,
+      // so check the full date each header carries for screen readers.
       cy.get(prevButton).click()
-      cy.contains('29 Mon').should('be.visible')
+      cy.contains('January 29, 2024').should('exist')
       cy.get(nextButton).click()
-      cy.contains('7 Wed').should('be.visible')
+      cy.contains('February 7, 2024').should('exist')
     })
 
     it(`allows the user to navigate to the next and previous day on ${viewport} screen`, () => {
       cy.viewport(viewport)
-      cy.get('button').contains('day').click()
+      cy.get('button').contains('Day').click()
       cy.get(prevButton).click()
       cy.contains('6 Tuesday').should('be.visible')
       cy.get(nextButton).click()
@@ -73,9 +84,9 @@ describe('ScheduleCalendar Component', () => {
     })
 
     it('can toggle to show week view and day view on screen', () => {
-      cy.get('button').contains('week').click()
+      cy.get('button').contains('Week').click()
       cy.contains(initialWeek).should('be.visible')
-      cy.get('button').contains('day').click()
+      cy.get('button').contains('Day').click()
       cy.contains(initialDate).should('be.visible')
     })
 
@@ -100,9 +111,10 @@ describe('ScheduleCalendar Component', () => {
     })
 
     it('can toggle to show week view and day view on screen', () => {
-      cy.get('button').contains('week').click()
-      cy.contains(initialWeek).should('be.visible')
-      cy.get('button').contains('day').click()
+      cy.get('button').contains('Week').click()
+      // Week headers are single letters on narrow screens in FullCalendar 7.
+      cy.contains('February 4, 2024').should('exist')
+      cy.get('button').contains('Day').click()
       cy.contains(initialDate).should('be.visible')
     })
 
@@ -113,7 +125,7 @@ describe('ScheduleCalendar Component', () => {
     })
 
     it('allows the user to navigate to the next and previous month', () => {
-      cy.get('button').contains('month').click()
+      cy.get('button').contains('Month').click()
       cy.get(prevButton).click()
       cy.contains('January 2024').should('be.visible')
       cy.get(nextButton).click()

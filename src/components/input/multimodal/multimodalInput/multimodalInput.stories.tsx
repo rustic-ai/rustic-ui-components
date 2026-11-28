@@ -1,6 +1,7 @@
-import type { Meta, StoryFn } from '@storybook/react-webpack5'
+import type { Meta } from '@storybook/react-webpack5'
 import axios from 'axios'
-import React from 'react'
+import type React from 'react'
+import type { ComponentType } from 'react'
 import { v4 as getUUID } from 'uuid'
 
 import { textInputDescription } from '../../../sharedDescription'
@@ -70,7 +71,7 @@ const multiModalInputMeta: Meta<React.ComponentProps<typeof MultimodalInput>> =
       ],
     },
     decorators: [
-      (Story: StoryFn) => {
+      (Story: ComponentType) => {
         return (
           <div style={{ width: '600px' }}>
             <Story />

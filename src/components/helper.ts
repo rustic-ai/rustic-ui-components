@@ -54,7 +54,7 @@ export function formatTimestamp(
 ): string {
   const date = new Date(timestampInMillis)
 
-  let options = {}
+  let options: Intl.DateTimeFormatOptions
   const userLocale = navigator.language
 
   if (format === TimeFormat.HOUR) {
@@ -101,6 +101,11 @@ export function formatTimestampLabel(
 }
 
 export function formatDurationTime(durationInSeconds: number): string {
+  // A media element reports NaN (unknown) or Infinity (live stream) until it
+  // knows its duration; show 0:00 instead of NaN:NaN.
+  if (!Number.isFinite(durationInSeconds) || durationInSeconds < 0) {
+    durationInSeconds = 0
+  }
   const hours = Math.floor(durationInSeconds / 3600)
   const minutes = Math.floor((durationInSeconds % 3600) / 60)
   const seconds = Math.floor(durationInSeconds % 60)

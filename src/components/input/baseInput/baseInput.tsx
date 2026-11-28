@@ -17,8 +17,8 @@ import type {
   Emoji as EmojiInfo,
   NativeEmoji,
 } from 'emoji-picker-element/shared'
+import type React from 'react'
 import { type ForwardedRef, forwardRef, useRef, useState } from 'react'
-import React from 'react'
 import { v4 as getUUID } from 'uuid'
 
 import Icon from '../../icon/icon'
@@ -36,7 +36,8 @@ type SuggestionMenuProps = {
 }
 const defaultMaxRows = 6
 const defaultMaxEmojiSearchResults = 5
-const speechRecognitionErrors = {
+// Keyed by string: browsers differ in which error codes they send.
+const speechRecognitionErrors: Record<string, string> = {
   'no-speech':
     'No speech detected. Check your microphone volume and try again.',
   aborted:

@@ -252,40 +252,46 @@ describe('MessageSpace Component', () => {
       teardownWebSocketServer()
     })
 
-    it(`scrolls to bottom when "Go to bottom" button is clicked on ${viewport} screen`, () => {
-      const waitTime = 500
+    // Cypress 16's default 'modern' visibility check treats a message scrolled out of
+    // the container as visible; this test relies on the earlier behavior.
+    it(
+      `scrolls to bottom when "Go to bottom" button is clicked on ${viewport} screen`,
+      { visibilityStrategy: 'legacy' },
+      () => {
+        const waitTime = 500
 
-      const mockWsClient = {
-        send: cy.stub(),
-        close: cy.stub(),
-        reconnect: cy.stub(),
-      }
+        const mockWsClient = {
+          send: cy.stub(),
+          close: cy.stub(),
+          reconnect: cy.stub(),
+        }
 
-      cy.viewport(viewport)
-      cy.mount(
-        <div style={{ height: '200px', display: 'flex' }}>
-          <MessageSpace
-            ws={mockWsClient}
-            sender={testUser}
-            receivedMessages={messages}
-            supportedElements={supportedElements}
-          />
-        </div>
-      )
+        cy.viewport(viewport)
+        cy.mount(
+          <div style={{ height: '200px', display: 'flex' }}>
+            <MessageSpace
+              ws={mockWsClient}
+              sender={testUser}
+              receivedMessages={messages}
+              supportedElements={supportedElements}
+            />
+          </div>
+        )
 
-      cy.get('p').contains('message 3').should('be.visible')
-      cy.get(messageSpace).contains('message 1').should('not.be.visible')
-      cy.get(messageContainer).scrollTo('top', { duration: 500 })
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(waitTime)
-      cy.get('[data-cy=scroll-down-button]').should('be.visible').realClick()
+        cy.get('p').contains('message 3').should('be.visible')
+        cy.get(messageSpace).contains('message 1').should('not.be.visible')
+        cy.get(messageContainer).scrollTo('top', { duration: 500 })
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(waitTime)
+        cy.get('[data-cy=scroll-down-button]').should('be.visible').realClick()
 
-      cy.get(messageSpace).then((messageList) => {
-        cy.wrap(messageList).within(() => {
-          cy.contains('message 3').should('be.visible')
+        cy.get(messageSpace).then((messageList) => {
+          cy.wrap(messageList).within(() => {
+            cy.contains('message 3').should('be.visible')
+          })
         })
-      })
-    })
+      }
+    )
 
     it(`renders form response correctly on ${viewport} screen`, () => {
       const mockWsClient = {

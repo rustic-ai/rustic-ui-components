@@ -7,7 +7,8 @@ import LinearProgress from '@mui/material/LinearProgress'
 import Slider from '@mui/material/Slider'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import React, { useState } from 'react'
+import type React from 'react';
+import { useState } from 'react'
 
 import { formatDurationTime } from '../../helper'
 import Icon from '../../icon/icon'
@@ -39,6 +40,11 @@ export function ProgressSlider(props: MediaControls) {
   const formattedElapsedTime = formatDurationTime(
     props.mediaElement.currentTime
   )
+  // duration is NaN until the media's metadata loads; passing that to the
+  // slider and progress bar makes React warn about NaN attributes.
+  const duration = Number.isFinite(props.mediaElement.duration)
+    ? props.mediaElement.duration
+    : 0
 
   function handleTimeChange(event: Event, newValue: number | number[]) {
     props.mediaElement.currentTime = newValue as number
@@ -60,7 +66,7 @@ export function ProgressSlider(props: MediaControls) {
     }
 
     const bufferedPercent =
-      (secondsBuffered / props.mediaElement.duration) * percentMultiple
+      duration > 0 ? (secondsBuffered / duration) * percentMultiple : 0
 
     return (
       <LinearProgress
@@ -88,7 +94,7 @@ export function ProgressSlider(props: MediaControls) {
         size="small"
         aria-label="Time"
         aria-valuetext={`Current time: ${formattedElapsedTime}`}
-        max={props.mediaElement.duration}
+        max={duration}
         value={props.mediaElement.currentTime}
         onChange={handleTimeChange}
         valueLabelDisplay="auto"
@@ -233,8 +239,8 @@ export function PlaybackRateButton(props: MediaControls) {
   return (
     <Tooltip
       title="Playback rate"
-      PopperProps={{
-        container: document.fullscreenElement ?? document.body,
+      slotProps={{
+        popper: { container: document.fullscreenElement ?? document.body },
       }}
     >
       <Button

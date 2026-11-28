@@ -1,13 +1,16 @@
+import '@fullcalendar/react/skeleton.css'
+import '@fullcalendar/react/themes/classic/theme.css'
+import '@fullcalendar/react/themes/classic/palette.css'
 import './fCCalendar.css'
 
-import dayGridPlugin from '@fullcalendar/daygrid'
 import FullCalendar from '@fullcalendar/react'
-import timeGridPlugin from '@fullcalendar/timegrid'
+import dayGridPlugin from '@fullcalendar/react/daygrid'
+import classicTheme from '@fullcalendar/react/themes/classic'
+import timeGridPlugin from '@fullcalendar/react/timegrid'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import React from 'react'
 
 import MarkedMarkdown from '../markdown/markedMarkdown'
 import type { CalendarData, CalendarEvent } from '../types'
@@ -28,8 +31,10 @@ function transformEvent(event: CalendarEvent) {
  * FullCalendar libraries are not bundled, so please install the following packages using npm:
  *
  * ```typescript
- * npm i @fullcalendar/core @fullcalendar/daygrid @fullcalendar/react @fullcalendar/timegrid
+ * npm i @fullcalendar/react temporal-polyfill
  * ```
+ *
+ * The calendar imports FullCalendar's stylesheets, so your bundler must handle CSS imports from `node_modules`.
  *
  * **Note**: On mobile screens, the calendar will default to the day view, offering users a detailed perspective of events for the selected day. Conversely, on larger screens, such as desktops or tablets, the calendar will default to the month view, offering users an overview of events scheduled throughout the month. */
 export default function FCCalendar(props: CalendarData) {
@@ -50,33 +55,25 @@ export default function FCCalendar(props: CalendarData) {
       sx={{
         border: `1px solid ${theme.palette.divider}`,
         borderRadius: `${theme.shape.borderRadius}px`,
-        '.fc .fc-toolbar-title': {
+        fontFamily: theme.typography.fontFamily,
+        // FullCalendar 7's classic theme is styled through these variables.
+        '--fc-classic-background': theme.palette.background.paper,
+        '--fc-classic-foreground': theme.palette.text.primary,
+        '--fc-classic-muted-foreground': theme.palette.text.secondary,
+        '--fc-classic-border': theme.palette.divider,
+        '--fc-classic-strong-border': theme.palette.divider,
+        '--fc-classic-primary': theme.palette.secondary.main,
+        '--fc-classic-primary-foreground': theme.palette.secondary.contrastText,
+        '--fc-classic-button': theme.palette.background.paper,
+        '--fc-classic-button-border': theme.palette.divider,
+        '--fc-classic-button-foreground': theme.palette.primary.main,
+        '--fc-classic-button-strong': theme.palette.secondary.main,
+        '--fc-classic-button-strong-border': theme.palette.divider,
+        '--fc-classic-button-outline': theme.palette.divider,
+        '.rustic-fc-toolbar-title': {
           ...theme.typography.h6,
         },
-        '.fc .fc-scrollgrid-liquid': {
-          borderRadius: `${theme.shape.borderRadius}px`,
-        },
-        '.fc td': {
-          borderRadius: `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`,
-        },
-        '.fc .fc-scrollgrid-section-header > th': {
-          borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
-        },
-        '.fc .fc-button, .fc .fc-button:active': {
-          color: theme.palette.primary.main,
-          backgroundColor: theme.palette.background.paper,
-          border: `1px solid ${theme.palette.divider}`,
-          borderRadius: `${theme.shape.borderRadius}px`,
-          '&:hover': {
-            backgroundColor: theme.palette.secondary.light,
-            border: `1px solid ${theme.palette.divider}`,
-          },
-        },
-        '.fc .fc-button-group .fc-button.fc-button-active': {
-          backgroundColor: theme.palette.secondary.main,
-          border: `1px solid ${theme.palette.divider}`,
-        },
-        '.fc a, .fc .fc-event-title, .fc .fc-button, .fc .fc-timegrid-slot': {
+        '.rustic-fc-button, .rustic-fc-event-title': {
           ...theme.typography.caption,
         },
       }}
@@ -84,11 +81,18 @@ export default function FCCalendar(props: CalendarData) {
       {props.title && <Typography variant="h6">{props.title}</Typography>}
       {props.description && <MarkedMarkdown text={props.description} />}
       <FullCalendar
-        plugins={[timeGridPlugin, dayGridPlugin]}
+        plugins={[classicTheme, timeGridPlugin, dayGridPlugin]}
+        // FullCalendar 7 renders hashed theme classes; these give the styles
+        // in fCCalendar.css and the tests stable hooks.
+        toolbarClass="rustic-fc-toolbar"
+        toolbarSectionClass="rustic-fc-toolbar-section"
+        toolbarTitleClass="rustic-fc-toolbar-title"
+        buttonClass="rustic-fc-button"
+        eventTitleClass="rustic-fc-event-title"
         initialView={getDefaultInitialView()}
         headerToolbar={{
-          left: 'title',
-          right: 'prev,next dayGridMonth,timeGridWeek,timeGridDay',
+          start: 'title',
+          end: 'prev,next dayGridMonth,timeGridWeek,timeGridDay',
         }}
         eventColor={theme.palette.secondary.main}
         displayEventTime={false}

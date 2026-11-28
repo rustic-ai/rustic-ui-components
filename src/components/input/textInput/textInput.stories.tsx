@@ -1,5 +1,6 @@
-import type { Meta, StoryFn } from '@storybook/react-webpack5'
-import React from 'react'
+import type { Meta } from '@storybook/react-webpack5'
+import type React from 'react'
+import type { ComponentType } from 'react'
 
 import { textInputDescription } from '../../sharedDescription'
 import type { BaseInputProps, WebSocketClient } from '../../types'
@@ -18,7 +19,7 @@ const meta: Meta<React.FC<InputProps>> = {
     layout: 'centered',
   },
   decorators: [
-    (Story: StoryFn) => (
+    (Story: ComponentType) => (
       <div style={{ width: 'clamp(250px, 50vw, 500px)' }}>
         <Story />
       </div>

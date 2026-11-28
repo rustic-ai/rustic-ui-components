@@ -6,7 +6,7 @@ import Box from '@mui/system/Box'
 import Stack from '@mui/system/Stack'
 import useTheme from '@mui/system/useTheme'
 import axios from 'axios'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import * as vega from 'vega'
 import { default as VegaEmbed } from 'vega-embed'
@@ -341,7 +341,7 @@ function VegaLiteViz({
   } else {
     return (
       <Stack direction="column" className="rustic-vega-lite-container">
-        <Box justifyContent="end" display="flex">
+        <Box sx={{ display: 'flex', justifyContent: 'end' }}>
           <PopoverMenu menuItems={menuItems} ariaLabel="Download options" />
         </Box>
 
@@ -363,7 +363,7 @@ function VegaLiteViz({
             }
           />
         )}
-        <Box textAlign="center" mt={1}>
+        <Box sx={{ textAlign: 'center', mt: 1 }}>
           {typeof props.spec.title === 'string' && (
             <Typography variant="subtitle2">{props.spec.title}</Typography>
           )}

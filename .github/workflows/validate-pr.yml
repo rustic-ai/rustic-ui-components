@@ -21,6 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Cypress 16 and the lint tooling need Node 22 or later.
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:

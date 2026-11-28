@@ -63,9 +63,19 @@ describe('Image', () => {
 
     it(`shows loader initially on ${viewport} screen`, () => {
       cy.viewport(viewport)
-      cy.mount(<Image {...defaultProps} />)
+      // Hold the response back so the loading state lasts long enough to
+      // assert on; the local test image otherwise loads before Cypress looks.
+      const delayedSrc = `${defaultProps.src}?delayed=${viewport}`
+      const responseDelayMs = 1000
+      cy.intercept(delayedSrc, (req) => {
+        req.on('response', (res) => {
+          res.setDelay(responseDelayMs)
+        })
+      })
+      cy.mount(<Image src={delayedSrc} />)
 
       cy.get('[data-cy="spinner"]').should('be.visible')
+      cy.get('[data-cy="spinner"]').should('not.exist')
     })
 
     it(`shows image description if provided on ${viewport} screen`, () => {

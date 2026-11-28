@@ -3,9 +3,10 @@
   "compilerOptions": {
     "sourceMap": true,
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "rootDir": "./src"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "global.d.ts"],
   "exclude": [
     "node_modules",
     "cypress",

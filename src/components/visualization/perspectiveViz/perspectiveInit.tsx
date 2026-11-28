@@ -15,14 +15,14 @@ export function initPerspective() {
     return initPromise
   }
 
-  initPromise = Promise.all([
-    perspective.init_server(SERVER_WASM as any),
-    perspective_viewer.init_client(CLIENT_WASM as any),
-  ])
-    .then(() => perspective.worker())
-    .then((worker: Client) => {
-      globalPerspectiveWorker = worker
-    })
+  // Perspective 5 only registers the binaries here and downloads them on the
+  // first worker() call. The bundler resolves the .wasm imports to URLs.
+  perspective.init_server(() => fetch(SERVER_WASM as string))
+  perspective_viewer.init_client(fetch(CLIENT_WASM as string))
+
+  initPromise = perspective.worker().then((worker: Client) => {
+    globalPerspectiveWorker = worker
+  })
 
   return initPromise
 }

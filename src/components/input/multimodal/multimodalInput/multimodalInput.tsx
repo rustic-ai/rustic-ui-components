@@ -4,7 +4,6 @@ import '../../../../index.css'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import { useEffect, useRef, useState } from 'react'
-import React from 'react'
 import { v4 as getUUID } from 'uuid'
 
 import { toChatRequest } from '../../../helper'

@@ -1,8 +1,8 @@
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import type { Meta } from '@storybook/react-webpack5'
-import type { StoryFn } from '@storybook/react-webpack5'
-import React from 'react'
+import type React from 'react'
+import type { ComponentType } from 'react'
 import { v4 as getUUID } from 'uuid'
 
 import {
@@ -29,7 +29,7 @@ const meta: Meta<React.ComponentProps<typeof MessageArchive>> = {
   component: MessageArchive,
   tags: ['autodocs'],
   decorators: [
-    (Story: StoryFn) => {
+    (Story: ComponentType) => {
       return (
         <div
           style={{

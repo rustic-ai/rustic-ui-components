@@ -42,7 +42,17 @@ describe('Video', () => {
     supportedViewports.forEach((viewport) => {
       it(`should initially show the loading spinner on ${viewport} screen`, () => {
         cy.viewport(viewport)
+        // Hold the response back so the loading state lasts long enough to
+        // assert on; local test media otherwise loads before Cypress looks.
+        const delayedSrc = `${src}?delayed`
+        cy.intercept(delayedSrc, (req) => {
+          req.on('response', (res) => {
+            res.setDelay(1000)
+          })
+        })
+        cy.mount(<Video src={delayedSrc} title={title} />)
         cy.get(loadingSpinner).should('be.visible')
+        cy.get(loadingSpinner).should('not.exist')
       })
       it(`should show and hide the transcript when clicking the transcript toggle on ${viewport} screen`, () => {
         cy.viewport(viewport)
@@ -168,7 +178,6 @@ describe('Video', () => {
           transcript={transcriptContent}
         />
       )
-      cy.get(loadingSpinner).should('be.visible')
       cy.get(loadingSpinner).should('not.exist')
     })
     it(`should go forwards and backwards 10 seconds when clicking the forward/back buttons`, () => {
@@ -191,7 +200,10 @@ describe('Video', () => {
 
       const sliderAnimationWait = 1000
       cy.wait(sliderAnimationWait)
-      cy.get(volumeSlider).type('{leftArrow}')
+      // MUI 9's Slider focuses its thumb input a frame after mousedown, so
+      // cy.type() on the root sees the track; focus the input and press a key.
+      cy.get(volumeSlider).find('input[type=range]').focus()
+      cy.realPress('ArrowLeft')
       cy.get(videoElement).its('0.volume').should('be.lessThan', 1)
     })
     it(`should change the time when the video progress slider is adjusted`, () => {

@@ -1,5 +1,4 @@
-import type { StoryFn } from '@storybook/react-webpack5'
-import React from 'react'
+import type { ComponentType } from 'react'
 
 import PDFViewer, { setPdfWorkerSrc } from './pdfViewer'
 
@@ -25,7 +24,7 @@ export const Default = {
     url: 'files/pdfExample.pdf',
   },
   decorators: [
-    (Story: StoryFn) => {
+    (Story: ComponentType) => {
       return (
         <div
           style={{

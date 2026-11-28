@@ -7,12 +7,14 @@ import IconButton from '@mui/material/IconButton'
 import ListItemText from '@mui/material/ListItemText'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import MenuList from '@mui/material/MenuList'
 import { useTheme } from '@mui/material/styles'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { Box } from '@mui/system'
+import type React from 'react';
 import type { ReactNode } from 'react'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import Icon from '../icon/icon'
 
@@ -178,7 +180,8 @@ export default function PopoverMenu(props: PopoverMenuProps) {
         }}
         data-cy="menu"
       >
-        {menuItems}
+        {/* Menu supplies its own MenuList; MUI 9 requires one around MenuItems in the Drawer too. */}
+        {isMobileView ? <MenuList>{menuItems}</MenuList> : menuItems}
       </PopoverMenuElement>
     </>
   )

@@ -1,6 +1,6 @@
 import './perspectiveViz.css'
 import '@perspective-dev/viewer-datagrid'
-import '@perspective-dev/viewer-d3fc'
+import '@perspective-dev/viewer-charts'
 import '@perspective-dev/viewer/dist/css/pro.css'
 import '@perspective-dev/viewer/dist/css/pro-dark.css'
 
@@ -9,11 +9,10 @@ import Typography from '@mui/material/Typography'
 import Stack from '@mui/system/Stack'
 import type { Client, View } from '@perspective-dev/client'
 import type {
-  ColumnConfigValues,
   HTMLPerspectiveViewerElement,
   ViewerConfigUpdate,
 } from '@perspective-dev/viewer'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import MarkedMarkdown from '../../markdown/markedMarkdown'
 import type {
@@ -23,7 +22,11 @@ import type {
   TableHeader,
   TableSort,
 } from '../../types'
-import { globalPerspectiveWorker } from './perspectiveInit'
+import { globalPerspectiveWorker, initPerspective } from './perspectiveInit'
+
+// Perspective 5 viewers create their panel from a named table, and every
+// PerspectiveViz shares one worker, so each table gets a unique name.
+let tableCount = 0
 
 function createHeaderMap(headers?: Array<TableHeader>): Record<string, string> {
   if (!headers) {
@@ -60,7 +63,7 @@ export function transformTableData(
  * Note: [Perspective](https://perspective-dev.github.io/) libraries are not bundled, so they must be included in the application's build process:
  *
  * ```node
- * npm i @perspective-dev/server @perspective-dev/client @perspective-dev/viewer @perspective-dev/viewer-d3fc @perspective-dev/viewer-datagrid
+ * npm i @perspective-dev/server @perspective-dev/client @perspective-dev/viewer @perspective-dev/viewer-charts @perspective-dev/viewer-datagrid
  * ```
  *
  * * **Important**: You must call `initPerspective()` once at the root level of your application before using this component. Additionally, ensure your Webpack configuration supports WebAssembly (WASM) files by adding the following settings:
@@ -222,7 +225,18 @@ function PerspectiveViz(props: TableData) {
   }
 
   useEffect(() => {
-    setWorker(globalPerspectiveWorker)
+    // Wait for initPerspective(), which the app calls once at startup; reading
+    // the worker straight away misses it when the component mounts first,
+    // which is the common case with Perspective 5's deferred WASM download.
+    let isActive = true
+    initPerspective().then(() => {
+      if (isActive) {
+        setWorker(globalPerspectiveWorker)
+      }
+    })
+    return () => {
+      isActive = false
+    }
   }, [])
 
   const transformedConfig = props.config && transformTableConfig(props.config)
@@ -233,9 +247,13 @@ function PerspectiveViz(props: TableData) {
     const viewer = viewerRef.current
 
     if (worker) {
+      tableCount += 1
+      const tableName = `rustic-perspective-${tableCount}`
       worker
-        .table(transformTableData(props.data, props.headers))
-        .then((newTable) => {
+        .table(transformTableData(props.data, props.headers), {
+          name: tableName,
+        })
+        .then(() => {
           if (viewer) {
             if (viewer.shadowRoot) {
               const sheet = new CSSStyleSheet()
@@ -248,13 +266,14 @@ function PerspectiveViz(props: TableData) {
                 dateStyle: props.config?.dateStyle || 'medium',
               },
             }
-            const colConfigs: { [columnName: string]: ColumnConfigValues } = {}
+            const colConfigs: Record<string, typeof dateColConfig> = {}
             props.config?.dateColumns?.forEach((column_name) => {
-              // @ts-expect-error other fields are not needed for date formatting
               colConfigs[column_name] = dateColConfig
             })
+            // Perspective 5 loads the client and picks the table by name in
+            // restore(); load(table) is deprecated.
             viewer
-              .load(newTable)
+              .load(worker)
               .then(() => {
                 if (!isMounted) {
                   return
@@ -263,6 +282,7 @@ function PerspectiveViz(props: TableData) {
 
                 return viewer
                   .restore({
+                    table: tableName,
                     ...transformedConfig,
                     theme: perspectiveTheme,
                     title: props.title,

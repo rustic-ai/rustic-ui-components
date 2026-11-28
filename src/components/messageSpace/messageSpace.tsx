@@ -2,7 +2,7 @@ import './messageSpace.css'
 
 import Chip from '@mui/material/Chip'
 import Box from '@mui/system/Box'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import ElementRenderer from '../elementRenderer/elementRenderer'
 import { getCombinedMessages } from '../helper'
@@ -65,7 +65,7 @@ export default function MessageSpace({
 }: MessageSpaceProps) {
   const scrollEndRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout>(undefined)
 
   //set default value as true to avoid showing scroll down button when there's no message in the message space
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true)

@@ -7,7 +7,8 @@ import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import type { AxiosProgressEvent } from 'axios'
 import axios from 'axios'
-import React, { useEffect, useRef, useState } from 'react'
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { v4 as getUUID } from 'uuid'
 
@@ -434,9 +435,9 @@ function Uploader(props: UploaderProps) {
   )
 
   function renderContentWithRef(
-    content: JSX.Element,
+    content: React.JSX.Element,
     domNode?: HTMLDivElement | null
-  ): JSX.Element {
+  ): React.JSX.Element {
     if (domNode) {
       return createPortal(content, domNode)
     } else {

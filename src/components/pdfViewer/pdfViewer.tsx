@@ -9,7 +9,8 @@ import Stack from '@mui/system/Stack'
 import useTheme from '@mui/system/useTheme'
 import type { RenderTask } from 'pdfjs-dist'
 import * as pdfjsLib from 'pdfjs-dist'
-import React, { useEffect, useRef, useState } from 'react'
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react'
 
 import type { PDFViewerProps } from '../types'
 import ViewerControlButton from './controlButton/controlButton'
@@ -205,9 +206,7 @@ function PDFViewer(props: PDFViewerProps) {
       </Box>
       <Stack
         direction="row"
-        justifyContent="center"
-        alignItems="center"
-        gap={1}
+        sx={{ justifyContent: 'center', alignItems: 'center', gap: 1 }}
       >
         <ViewerControlButton
           action="previousPage"

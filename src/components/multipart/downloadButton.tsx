@@ -1,6 +1,5 @@
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-import React from 'react'
 
 import Icon from '../icon/icon'
 import type { GetAuthHeaders } from '../types'

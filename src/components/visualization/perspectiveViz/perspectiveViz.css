@@ -13,3 +13,9 @@
 perspective-viewer-datagrid-toolbar {
   display: none;
 }
+
+/* Perspective 5 shows each panel's title in a tab; the component renders the
+   title itself, and earlier versions kept it hidden in the status bar. */
+.rustic-perspective-viz perspective-viewer-tab {
+  display: none;
+}

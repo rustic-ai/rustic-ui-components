@@ -1,6 +1,5 @@
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-import React from 'react'
 
 import Icon from '../../icon/icon'
 
@@ -51,7 +50,9 @@ export function MediaIconButton(props: MediaIconButtonProps) {
   return (
     <Tooltip
       title={controls[props.action].label}
-      PopperProps={{ container: document.fullscreenElement ?? document.body }}
+      slotProps={{
+        popper: { container: document.fullscreenElement ?? document.body },
+      }}
     >
       <IconButton
         onClick={props.onClick}

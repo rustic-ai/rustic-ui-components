@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import type { VisualizationSpec } from 'vega-embed'
 
 import { supportedViewports } from '../../../../cypress/support/variables'
@@ -138,5 +139,41 @@ describe('VegaLiteViz', () => {
           expect(height).to.be.greaterThan(0)
         })
     })
+  })
+})
+
+describe('VegaLiteViz sizing', () => {
+  it('redraws at the new width when its container narrows', () => {
+    cy.viewport(1000, 800)
+    cy.mount(
+      <div data-cy="vega-box" style={{ width: 600 }}>
+        <VegaLiteViz
+          spec={{
+            $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+            width: 'container',
+            data: {
+              values: [
+                { a: 'A', b: 28 },
+                { a: 'B', b: 55 },
+              ],
+            },
+            mark: 'bar',
+            encoding: {
+              x: { field: 'a', type: 'nominal' },
+              y: { field: 'b', type: 'quantitative' },
+            },
+          }}
+          theme={{ dark: 'dark' }}
+        />
+      </div>
+    )
+    // A should() callback re-reads the element until the width matches.
+    const expectChartWidthWithin = (min: number, max: number) =>
+      cy.get('[data-cy="vega-lite"] svg.marks').should(($svg) => {
+        expect($svg[0].getBoundingClientRect().width).to.be.within(min, max)
+      })
+    expectChartWidthWithin(550, 601)
+    cy.get('[data-cy=vega-box]').invoke('css', 'width', '300px')
+    expectChartWidthWithin(250, 301)
   })
 })

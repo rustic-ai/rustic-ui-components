@@ -4,7 +4,8 @@ import { useTheme } from '@mui/material'
 import Card from '@mui/material/Card'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import React, { forwardRef, type ReactNode } from 'react'
+import type React from 'react';
+import { forwardRef, type ReactNode } from 'react'
 
 import Timestamp from '../timestamp/timestamp'
 import type { Message } from '../types'
@@ -52,8 +53,8 @@ function MessageCanvasElement(
     >
       <Stack
         direction="row"
-        alignItems="center"
         spacing={1}
+        sx={{ alignItems: 'center' }}
         className="rustic-header"
       >
         {props.getProfileComponent && props.getProfileComponent(messageInfo)}

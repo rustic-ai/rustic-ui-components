@@ -1,4 +1,3 @@
-import React from 'react'
 
 import { toChatRequest } from '../../helper'
 import type { Message, TextInputProps } from '../../types'

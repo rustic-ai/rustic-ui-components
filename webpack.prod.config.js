@@ -1,3 +1,6 @@
+const fs = require('fs')
+const path = require('path')
+
 const commonConfig = require('./webpack.config.js')
 const nodeExternals = require('webpack-node-externals')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -12,6 +15,37 @@ function removeJsxAttributesTransformer(attributes) {
       return ts.visitEachChild(node, visitor, context)
     }
     return (node) => ts.visitNode(node, visitor, context)
+  }
+}
+
+// The vendored uniforms-mui is MIT licensed, and its code is compiled into
+// the bundles, so its license has to ship in the package too. The build drops
+// source comments, so copy the LICENSE file next to its type declarations.
+const VENDORED_LICENSES = ['vendor/uniforms-mui/LICENSE']
+class CopyVendoredLicensesPlugin {
+  apply(compiler) {
+    const { Compilation, sources } = compiler.webpack
+    compiler.hooks.thisCompilation.tap(
+      'CopyVendoredLicenses',
+      (compilation) => {
+        compilation.hooks.processAssets.tap(
+          {
+            name: 'CopyVendoredLicenses',
+            stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
+          },
+          () => {
+            for (const license of VENDORED_LICENSES) {
+              const sourcePath = path.resolve(__dirname, 'src', license)
+              compilation.fileDependencies.add(sourcePath)
+              compilation.emitAsset(
+                license,
+                new sources.RawSource(fs.readFileSync(sourcePath))
+              )
+            }
+          }
+        )
+      }
+    )
   }
 }
 
@@ -50,6 +84,7 @@ module.exports = {
   externalsPresets: { node: true },
   externals: [nodeExternals({})],
   plugins: [
+    new CopyVendoredLicensesPlugin(),
     new MiniCssExtractPlugin({
       filename: getCssFilename,
     }),

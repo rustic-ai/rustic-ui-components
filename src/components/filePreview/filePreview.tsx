@@ -7,7 +7,8 @@ import Modal from '@mui/material/Modal'
 import { useTheme } from '@mui/material/styles'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import React, { useState } from 'react'
+import type React from 'react';
+import { useState } from 'react'
 
 import { shortenString } from '../helper'
 import Icon from '../icon/icon'

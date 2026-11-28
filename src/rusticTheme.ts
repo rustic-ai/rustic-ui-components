@@ -391,45 +391,61 @@ export function generateTheme(
               color: modeColors.textDisabled,
               border: `1px solid ${modeColors.actionDisabled}`,
             },
-          },
-          containedPrimary: {
-            background: modeColors.primaryMain,
-            color: modeColors.primaryContrastText,
-            '&:hover': {
-              background: modeColors.primaryLight,
-            },
-            '&:active': {
-              background: modeColors.primaryMain,
-              outline: `2px solid ${modeColors.primaryLight}`,
-            },
-          },
-          containedSecondary: {
-            '&:hover': {
-              background: modeColors.secondaryLight,
-            },
-            '&:active': {
-              background: modeColors.secondaryMain,
-              outline: `2px solid ${modeColors.secondaryLight}`,
-            },
-          },
-          outlinedSecondary: {
-            color: modeColors.textPrimary,
-            '&:hover': {
-              border: `1px solid ${modeColors.secondaryDark}`,
-              background: modeColors.secondaryFocus,
-            },
-            '&:active': {
-              outline: `2px solid ${modeColors.secondaryLight}`,
-            },
-          },
-          textSecondary: {
-            color: modeColors.textPrimary,
-            '&:hover': {
-              background: modeColors.secondaryFocus,
-            },
-            '&.Mui-disabled': {
-              border: 'none',
-            },
+            // MUI 9 dropped the combined classes (containedPrimary and
+            // friends), so these overrides are keyed on variant and color.
+            variants: [
+              {
+                props: { variant: 'contained', color: 'primary' },
+                style: {
+                  background: modeColors.primaryMain,
+                  color: modeColors.primaryContrastText,
+                  '&:hover': {
+                    background: modeColors.primaryLight,
+                  },
+                  '&:active': {
+                    background: modeColors.primaryMain,
+                    outline: `2px solid ${modeColors.primaryLight}`,
+                  },
+                },
+              },
+              {
+                props: { variant: 'contained', color: 'secondary' },
+                style: {
+                  '&:hover': {
+                    background: modeColors.secondaryLight,
+                  },
+                  '&:active': {
+                    background: modeColors.secondaryMain,
+                    outline: `2px solid ${modeColors.secondaryLight}`,
+                  },
+                },
+              },
+              {
+                props: { variant: 'outlined', color: 'secondary' },
+                style: {
+                  color: modeColors.textPrimary,
+                  '&:hover': {
+                    border: `1px solid ${modeColors.secondaryDark}`,
+                    background: modeColors.secondaryFocus,
+                  },
+                  '&:active': {
+                    outline: `2px solid ${modeColors.secondaryLight}`,
+                  },
+                },
+              },
+              {
+                props: { variant: 'text', color: 'secondary' },
+                style: {
+                  color: modeColors.textPrimary,
+                  '&:hover': {
+                    background: modeColors.secondaryFocus,
+                  },
+                  '&.Mui-disabled': {
+                    border: 'none',
+                  },
+                },
+              },
+            ],
           },
         },
       },
