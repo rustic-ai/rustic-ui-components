@@ -65,6 +65,7 @@
     "@types/react-dom": "19.3.0",
     "@typescript-eslint/eslint-plugin": "8.74.0",
     "@typescript-eslint/parser": "8.74.0",
+    "ajv": "8.20.0",
     "commitizen": "4.3.2",
     "css-loader": "7.1.5",
     "cypress": "16.4.0",
@@ -125,6 +126,7 @@
     "@perspective-dev/viewer-datagrid": "^5.10.0",
     "@types/react": "^18.3.28 || ^19.0.0",
     "@types/react-dom": "^18.3.7 || ^19.0.0",
+    "ajv": "^8.0.0",
     "axios": "^1.16.0",
     "emoji-picker-element": "^1.26.3",
     "emoji-picker-element-data": "^1.7.2",
@@ -204,6 +206,9 @@
       "optional": true
     },
     "uuid": {
+      "optional": true
+    },
+    "ajv": {
       "optional": true
     },
     "uniforms": {

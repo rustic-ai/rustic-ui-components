@@ -13,10 +13,10 @@ import type { DynamicFormProps, Message } from '../types'
  * The `UniformsForm` component provides a user interface for rendering a dynamic form using [uniforms](https://uniforms.tools/) and sending the response as a message on the websocket.
  * It is designed to facilitate interactive decision-making and response submission within a conversation or messaging context.
  *
- * Note: `uuid` and `uniforms` are not bundled, so please install the following package using npm:
+ * Note: `uuid`, `uniforms` and `ajv` are not bundled, so please install the following package using npm:
  *
  * ```typescript
- * npm i uniforms uniforms-bridge-json-schema uuid
+ * npm i uniforms uniforms-bridge-json-schema ajv uuid
  * ```
  */
 export default function UniformsForm(props: DynamicFormProps) {
